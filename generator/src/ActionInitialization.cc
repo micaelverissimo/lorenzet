@@ -23,73 +23,47 @@
 // * acceptance of all terms of the Geant4 Software license.          *
 // ********************************************************************
 //
-/// \file eventgenerator/HepMC/HepMCEx02/HepMCEx02.cc
-/// \brief Main program of the eventgenerator/HepMC/HepMCEx02 example
+// $Id: ActionInitialization.cc 68058 2013-03-13 14:47:43Z gcosmo $
 //
-//
-//
-// 
-// --------------------------------------------------------------
-//      GEANT 4 - example of HepMC-interface
-// --------------------------------------------------------------
+/// \file ActionInitialization.cc
+/// \brief Implementation of the ActionInitialization class
 
-#include "G4Types.hh"
-
-#include "G4RunManager.hh"
-#include "G4UImanager.hh"
-
-#include "DetectorConstruction.hh"
-#include "FTFP_BERT.hh"
+#include "ActionInitialization.hh"
 #include "PrimaryGeneratorAction.hh"
+#include "RunAction.hh"
 #include "EventAction.hh"
 #include "SteppingAction.hh"
-#include "ActionInitialization.hh"
+#include "G4MTRunManager.hh"
+#include "DetectorConstruction.hh"
 
-#include "G4VisExecutive.hh"
-#include "G4UIExecutive.hh"
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
-#include "time.h"
-int main(int argc, char** argv)
+ActionInitialization::ActionInitialization
+                            (DetectorConstruction* detConstruction)
+ : G4VUserActionInitialization(),
+   m_detConstruction(detConstruction)
+{}
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+
+ActionInitialization::~ActionInitialization()
+{}
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+
+void ActionInitialization::BuildForMaster() const
 {
-  G4UIExecutive* ui = nullptr;
-  if ( argc == 1 ) {
-    ui = new G4UIExecutive(argc, argv);
-  }
-  
-  G4long seed = abs(((time(NULL) * 181) * ((83) * 359)) % 104729);
-  CLHEP::HepRandom::setTheSeed(seed);
-
-
-  G4RunManager* runManager= new G4RunManager;
-
-  DetectorConstruction* detConstruction = new DetectorConstruction();
-  runManager->SetUserInitialization(detConstruction);
-
-  G4VModularPhysicsList* physicsList = new FTFP_BERT();
-  runManager->SetUserInitialization(physicsList);
-
-  ActionInitialization* actionInitialization = new ActionInitialization(detConstruction);
-  runManager->SetUserInitialization(actionInitialization);
-
-  runManager->Initialize();
-  G4VisManager* visManager= new G4VisExecutive();
-  visManager->Initialize();
-
-
-  G4UImanager* UImanager = G4UImanager::GetUIpointer();  
-
-  if (!ui) { // batch mode
-    visManager-> SetVerboseLevel("quiet");
-    G4String command = "/control/execute ";
-    G4String fileName = argv[1];
-    UImanager->ApplyCommand(command+fileName);    
-  } else {  
-    ui-> SessionStart();
-    delete ui;
-  }
-
-
-  delete visManager;
-  delete runManager;
+  SetUserAction(new RunAction);
 }
 
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+
+void ActionInitialization::Build() const
+{
+  SetUserAction(new PrimaryGeneratorAction());
+  SetUserAction(new RunAction());
+  SetUserAction(new EventAction());
+  SetUserAction(new SteppingAction());
+}  
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
