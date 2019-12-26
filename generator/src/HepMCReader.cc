@@ -22,50 +22,47 @@
 // * use  in  resulting  scientific  publications,  and indicate your *
 // * acceptance of all terms of the Geant4 Software license.          *
 // ********************************************************************
+//
+/// \file eventgenerator/HepMC/HepMCEx01/src/HepMCG4AsciiReader.cc
+/// \brief Implementation of the HepMCG4AsciiReader class
+//
+//
 
-
-#include "G4Event.hh"
-#include "G4ParticleGun.hh"
 #include "HepMCReader.hh"
-#include "PrimaryGeneratorAction.hh"
-#include "PrimaryGeneratorMessenger.hh"
-#include "G4SystemOfUnits.hh"
-#include "G4ParticleGunMessenger.hh"
+#include "HepMCReaderMessenger.hh"
 
+#include <iostream>
+#include <fstream>
 
-PrimaryGeneratorAction::PrimaryGeneratorAction(): G4VUserPrimaryGeneratorAction()
+HepMCReader::HepMCReader()
+  :  m_filename("hepmc_input.dat"), 
+     m_verbose(0)
 {
-  // default generator is particle gun.
-  auto gun  = new G4ParticleGun();
-  //m_particleGunMessenger = new G4ParticleGunMessenger( gun );
-  m_currentGenerator = m_particleGun = gun;
+  
+  m_asciiInput = new HepMC::IO_GenEvent(m_filename.c_str(), std::ios::in);
+  m_messenger= new HepMCReaderMessenger(this);
 
-  m_currentGeneratorName= "particleGun";
-  m_hepmcAscii= new HepMCReader();
-
-  m_gentypeMap["particleGun"] = m_particleGun;
-  m_gentypeMap["hepmcAscii"]  = m_hepmcAscii;
-
-  m_messenger= new PrimaryGeneratorMessenger(this);
 }
 
 
-PrimaryGeneratorAction::~PrimaryGeneratorAction()
+HepMCReader::~HepMCReader()
 {
+  delete m_asciiInput;
   delete m_messenger;
-  //delete m_particleGunMessenger;
 }
 
 
-void PrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
+void HepMCReader::Initialize()
 {
-  if(m_currentGenerator)
-    m_currentGenerator->GeneratePrimaryVertex(anEvent);
-  else
-    G4Exception("PrimaryGeneratorAction::GeneratePrimaries",
-                "InvalidSetup", FatalException,
-                "Generator is not instanciated.");
+  delete m_asciiInput;
+  m_asciiInput= new HepMC::IO_GenEvent(m_filename.c_str(), std::ios::in);
 }
 
 
-
+HepMC::GenEvent* HepMCReader::GenerateHepMCEvent()
+{
+  HepMC::GenEvent* evt= m_asciiInput->read_next_event();
+  if(!evt) return 0;
+  if(m_verbose>0) evt->print();
+  return evt;
+}

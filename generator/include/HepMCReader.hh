@@ -24,48 +24,62 @@
 // ********************************************************************
 
 
-#include "G4Event.hh"
-#include "G4ParticleGun.hh"
-#include "HepMCReader.hh"
-#include "PrimaryGeneratorAction.hh"
-#include "PrimaryGeneratorMessenger.hh"
-#include "G4SystemOfUnits.hh"
-#include "G4ParticleGunMessenger.hh"
+#ifndef HEPMC_G4_ASCII_READER_H
+#define HEPMC_G4_ASCII_READER_H
+
+#include "HepMCInterface.hh"
+#include "HepMC/IO_GenEvent.h"
+
+class HepMCReaderMessenger;
+
+class HepMCReader : public HepMCInterface {
+  
+ 
+  public:
+
+    HepMCReader();
+    ~HepMCReader();
+  
+    // set/get methods
+    void SetFileName(G4String name);
+    G4String GetFileName() const;
+  
+    void SetVerboseLevel(G4int i);
+    G4int GetVerboseLevel() const; 
+  
+    void Initialize();
+
+  protected:
+    G4String               m_filename;
+    HepMC::IO_GenEvent    *m_asciiInput;
+    G4int                  m_verbose;
+    HepMCReaderMessenger  *m_messenger;
+  
+    virtual HepMC::GenEvent* GenerateHepMCEvent();
+ 
 
 
-PrimaryGeneratorAction::PrimaryGeneratorAction(): G4VUserPrimaryGeneratorAction()
+};
+
+
+inline void HepMCReader::SetFileName(G4String name)
 {
-  // default generator is particle gun.
-  auto gun  = new G4ParticleGun();
-  //m_particleGunMessenger = new G4ParticleGunMessenger( gun );
-  m_currentGenerator = m_particleGun = gun;
-
-  m_currentGeneratorName= "particleGun";
-  m_hepmcAscii= new HepMCReader();
-
-  m_gentypeMap["particleGun"] = m_particleGun;
-  m_gentypeMap["hepmcAscii"]  = m_hepmcAscii;
-
-  m_messenger= new PrimaryGeneratorMessenger(this);
+  m_filename= name;
 }
 
-
-PrimaryGeneratorAction::~PrimaryGeneratorAction()
+inline G4String HepMCReader::GetFileName() const
 {
-  delete m_messenger;
-  //delete m_particleGunMessenger;
+  return m_filename;
 }
 
-
-void PrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
+inline void HepMCReader::SetVerboseLevel(G4int i)
 {
-  if(m_currentGenerator)
-    m_currentGenerator->GeneratePrimaryVertex(anEvent);
-  else
-    G4Exception("PrimaryGeneratorAction::GeneratePrimaries",
-                "InvalidSetup", FatalException,
-                "Generator is not instanciated.");
+  m_verbose= i;
 }
 
+inline G4int HepMCReader::GetVerboseLevel() const
+{
+  return m_verbose;
+}
 
-
+#endif

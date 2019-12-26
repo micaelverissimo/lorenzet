@@ -243,8 +243,8 @@ G4VPhysicalVolume* DetectorConstruction::DefineVolumes()
   // TileCal
   //
   G4double tile_calorThickness = 100.*cm;
-  G4VSolid* tile_calorimeterS
-    = new G4Box("TileCal",     // its name
+
+  G4VSolid* tile_calorimeterS = new G4Box("TileCal",     // its name
                  calorSizeXY/2, calorSizeXY/2, tile_calorThickness/2); // its size
 
   G4LogicalVolume* tile_calorLV = new G4LogicalVolume(

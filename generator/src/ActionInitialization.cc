@@ -38,16 +38,14 @@
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
-ActionInitialization::ActionInitialization
-                            (DetectorConstruction* detConstruction)
- : G4VUserActionInitialization(),
-   m_detConstruction(detConstruction)
-{}
+ActionInitialization::ActionInitialization(DetectorConstruction * /**/)
+ : G4VUserActionInitialization()
+{;}
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
 ActionInitialization::~ActionInitialization()
-{}
+{;}
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 

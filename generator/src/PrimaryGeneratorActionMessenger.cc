@@ -24,48 +24,54 @@
 // ********************************************************************
 
 
-#include "G4Event.hh"
-#include "G4ParticleGun.hh"
-#include "HepMCReader.hh"
-#include "PrimaryGeneratorAction.hh"
+#include "G4UIcmdWithABool.hh"
+#include "G4UIcmdWithAnInteger.hh"
+#include "G4UIcmdWithAString.hh"
+#include "G4UIcmdWithoutParameter.hh"
+#include "G4UIcommand.hh"
+#include "G4UIdirectory.hh"
+#include "G4UIparameter.hh"
 #include "PrimaryGeneratorMessenger.hh"
-#include "G4SystemOfUnits.hh"
-#include "G4ParticleGunMessenger.hh"
+#include "PrimaryGeneratorAction.hh"
 
-
-PrimaryGeneratorAction::PrimaryGeneratorAction(): G4VUserPrimaryGeneratorAction()
+PrimaryGeneratorMessenger::PrimaryGeneratorMessenger( PrimaryGeneratorAction* genaction )
+  : G4UImessenger(),
+    m_primaryAction(genaction)
 {
-  // default generator is particle gun.
-  auto gun  = new G4ParticleGun();
-  //m_particleGunMessenger = new G4ParticleGunMessenger( gun );
-  m_currentGenerator = m_particleGun = gun;
+  m_dir= new G4UIdirectory("/generator/");
+  m_dir-> SetGuidance("Control commands for primary generator");
 
-  m_currentGeneratorName= "particleGun";
-  m_hepmcAscii= new HepMCReader();
 
-  m_gentypeMap["particleGun"] = m_particleGun;
-  m_gentypeMap["hepmcAscii"]  = m_hepmcAscii;
-
-  m_messenger= new PrimaryGeneratorMessenger(this);
+  m_select= new G4UIcmdWithAString("/generator/select", this);
+  m_select-> SetGuidance("Select generator type");
+  m_select-> SetParameterName("generator_type", false, false);
+  m_select-> SetCandidates("particleGun hepmcAscii");
+  m_select-> SetDefaultValue("particleGun");
 }
 
 
-PrimaryGeneratorAction::~PrimaryGeneratorAction()
+PrimaryGeneratorMessenger::~PrimaryGeneratorMessenger()
 {
-  delete m_messenger;
-  //delete m_particleGunMessenger;
+  delete m_select;
+  delete m_dir;
 }
 
 
-void PrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
+void PrimaryGeneratorMessenger::SetNewValue(G4UIcommand* command, G4String newValues)
 {
-  if(m_currentGenerator)
-    m_currentGenerator->GeneratePrimaryVertex(anEvent);
-  else
-    G4Exception("PrimaryGeneratorAction::GeneratePrimaries",
-                "InvalidSetup", FatalException,
-                "Generator is not instanciated.");
+  if ( command == m_select) {
+    m_primaryAction->SetGenerator(newValues);
+    G4cout << "current generator type: " << m_primaryAction-> GetGeneratorName() << G4endl;
+  }
 }
 
 
+G4String PrimaryGeneratorMessenger::GetCurrentValue(G4UIcommand* command)
+{
+  G4String cv, st;
+  if (command == m_select) {
+    cv= m_primaryAction-> GetGeneratorName();
+  }
 
+ return cv;
+}

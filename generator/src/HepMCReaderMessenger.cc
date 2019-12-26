@@ -24,48 +24,59 @@
 // ********************************************************************
 
 
-#include "G4Event.hh"
-#include "G4ParticleGun.hh"
+#include "G4UIdirectory.hh"
+#include "G4UIcmdWithoutParameter.hh"
+#include "G4UIcmdWithAString.hh"
+#include "G4UIcmdWithAnInteger.hh"
+#include "HepMCReaderMessenger.hh"
 #include "HepMCReader.hh"
-#include "PrimaryGeneratorAction.hh"
-#include "PrimaryGeneratorMessenger.hh"
-#include "G4SystemOfUnits.hh"
-#include "G4ParticleGunMessenger.hh"
 
 
-PrimaryGeneratorAction::PrimaryGeneratorAction(): G4VUserPrimaryGeneratorAction()
+HepMCReaderMessenger::HepMCReaderMessenger(HepMCReader* agen)
+  : m_gen(agen)
 {
-  // default generator is particle gun.
-  auto gun  = new G4ParticleGun();
-  //m_particleGunMessenger = new G4ParticleGunMessenger( gun );
-  m_currentGenerator = m_particleGun = gun;
+  m_dir= new G4UIdirectory("/generator/hepmcAscii/");
+  m_dir->SetGuidance("Reading HepMC event from an Ascii file");
 
-  m_currentGeneratorName= "particleGun";
-  m_hepmcAscii= new HepMCReader();
+  m_verbose= new G4UIcmdWithAnInteger("/generator/hepmcAscii/verbose", this);
+  m_verbose-> SetGuidance("Set verbose level");
+  m_verbose-> SetParameterName("verboseLevel", false, false);
+  m_verbose-> SetRange("verboseLevel>=0 && verboseLevel<=1");
 
-  m_gentypeMap["particleGun"] = m_particleGun;
-  m_gentypeMap["hepmcAscii"]  = m_hepmcAscii;
-
-  m_messenger= new PrimaryGeneratorMessenger(this);
+  m_open= new G4UIcmdWithAString("/generator/hepmcAscii/open", this);
+  m_open-> SetGuidance("(re)open data file (HepMC Ascii format)");
+  m_open-> SetParameterName("input ascii file", true, true);
 }
 
 
-PrimaryGeneratorAction::~PrimaryGeneratorAction()
+HepMCReaderMessenger::~HepMCReaderMessenger()
 {
-  delete m_messenger;
-  //delete m_particleGunMessenger;
+  delete m_verbose;
+  delete m_open;
+  delete m_dir;
 }
 
 
-void PrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
+void HepMCReaderMessenger::SetNewValue(G4UIcommand* command, G4String newValues)
 {
-  if(m_currentGenerator)
-    m_currentGenerator->GeneratePrimaryVertex(anEvent);
-  else
-    G4Exception("PrimaryGeneratorAction::GeneratePrimaries",
-                "InvalidSetup", FatalException,
-                "Generator is not instanciated.");
+  if (command==m_verbose) {
+    int level= m_verbose-> GetNewIntValue(newValues);
+    m_gen-> SetVerboseLevel(level);
+  } else if (command==m_open) {
+    m_gen-> SetFileName(newValues);
+    G4cout << "HepMC Ascii inputfile: " << m_gen->GetFileName() << G4endl;
+    m_gen->Initialize();
+  }
 }
 
 
-
+G4String HepMCReaderMessenger::GetCurrentValue(G4UIcommand* command)
+{
+  G4String cv;
+  if (command == m_verbose) {
+    cv= m_verbose->ConvertToString(m_gen-> GetVerboseLevel());
+  } else  if (command == m_open) {
+    cv= m_gen->GetFileName();
+  }
+  return cv;
+}

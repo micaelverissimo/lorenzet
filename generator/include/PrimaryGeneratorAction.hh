@@ -30,6 +30,7 @@
 #include <map>
 #include "globals.hh"
 #include "G4VUserPrimaryGeneratorAction.hh"
+#include "G4ParticleGunMessenger.hh"
 
 class G4Event;
 class G4VPrimaryGenerator;
@@ -53,14 +54,16 @@ class PrimaryGeneratorAction : public G4VUserPrimaryGeneratorAction {
 
     G4VPrimaryGenerator *m_particleGun;
     G4VPrimaryGenerator *m_hepmcAscii;
-    G4VPrimaryGenerator *m_pythiaGen;
   
     G4VPrimaryGenerator                       *m_currentGenerator;
     G4String                                   m_currentGeneratorName;
     std::map<G4String, G4VPrimaryGenerator*>   m_gentypeMap;
     PrimaryGeneratorMessenger                 *m_messenger;
-
+    //G4ParticleGunMessenger                    *m_particleGunMessenger;
 };
+
+
+
 
 inline void PrimaryGeneratorAction::SetGenerator(G4VPrimaryGenerator* gen)
 {

@@ -1,4 +1,3 @@
-//
 // ********************************************************************
 // * License and Disclaimer                                           *
 // *                                                                  *
@@ -22,50 +21,38 @@
 // * use  in  resulting  scientific  publications,  and indicate your *
 // * acceptance of all terms of the Geant4 Software license.          *
 // ********************************************************************
+//
+/// \file eventgenerator/HepMC/HepMCEx01/include/HepMCG4AsciiReaderMessenger.hh
+/// \brief Definition of the HepMCG4AsciiReaderMessenger class
+//
+//
 
+#ifndef HEPMC_G4_ASCII_READER_MESSENGER_H
+#define HEPMC_G4_ASCII_READER_MESSENGER_H
 
-#include "G4Event.hh"
-#include "G4ParticleGun.hh"
-#include "HepMCReader.hh"
-#include "PrimaryGeneratorAction.hh"
-#include "PrimaryGeneratorMessenger.hh"
-#include "G4SystemOfUnits.hh"
-#include "G4ParticleGunMessenger.hh"
+#include "G4UImessenger.hh"
 
+class HepMCReader;
+class G4UIdirectory;
+class G4UIcmdWithoutParameter;
+class G4UIcmdWithAString;
+class G4UIcmdWithAnInteger;
 
-PrimaryGeneratorAction::PrimaryGeneratorAction(): G4VUserPrimaryGeneratorAction()
-{
-  // default generator is particle gun.
-  auto gun  = new G4ParticleGun();
-  //m_particleGunMessenger = new G4ParticleGunMessenger( gun );
-  m_currentGenerator = m_particleGun = gun;
+class HepMCReaderMessenger : public G4UImessenger {
+  
+  public:
+    HepMCReaderMessenger(HepMCReader* agen);
+    ~HepMCReaderMessenger();
+  
+    void SetNewValue(G4UIcommand* command, G4String newValues);
+    G4String GetCurrentValue(G4UIcommand* command);
+  
+  private:
+    HepMCReader           *m_gen;
+    G4UIdirectory         *m_dir;
+    G4UIcmdWithAnInteger  *m_verbose;
+    G4UIcmdWithAString    *m_open;
 
-  m_currentGeneratorName= "particleGun";
-  m_hepmcAscii= new HepMCReader();
+};
 
-  m_gentypeMap["particleGun"] = m_particleGun;
-  m_gentypeMap["hepmcAscii"]  = m_hepmcAscii;
-
-  m_messenger= new PrimaryGeneratorMessenger(this);
-}
-
-
-PrimaryGeneratorAction::~PrimaryGeneratorAction()
-{
-  delete m_messenger;
-  //delete m_particleGunMessenger;
-}
-
-
-void PrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
-{
-  if(m_currentGenerator)
-    m_currentGenerator->GeneratePrimaryVertex(anEvent);
-  else
-    G4Exception("PrimaryGeneratorAction::GeneratePrimaries",
-                "InvalidSetup", FatalException,
-                "Generator is not instanciated.");
-}
-
-
-
+#endif

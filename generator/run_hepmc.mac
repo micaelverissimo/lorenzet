@@ -1,0 +1,12 @@
+
+/run/initialize
+/run/printProgress 1
+/run/verbose 2
+
+/generator/select hepmcAscii
+/generator/hepmcAscii/open data/example_MyPythia.dat
+/generator/hepmcAscii/verbose 1
+
+
+/run/beamOn 1
+
