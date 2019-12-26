@@ -1,3 +1,0 @@
-/Users/jodafons/Desktop/hep_simulator/generator/build/CMakeFiles/rebuild_cache.dir
-/Users/jodafons/Desktop/hep_simulator/generator/build/CMakeFiles/edit_cache.dir
-/Users/jodafons/Desktop/hep_simulator/generator/build/CMakeFiles/generator.dir
