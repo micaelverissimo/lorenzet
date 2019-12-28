@@ -28,28 +28,29 @@
 #include "G4UIcmdWithoutParameter.hh"
 #include "G4UIcmdWithAString.hh"
 #include "G4UIcmdWithAnInteger.hh"
-#include "HepMCReaderMessenger.hh"
-#include "HepMCReader.hh"
+#include "jets/JetReaderMessenger.hh"
+#include "jets/JetReader.hh"
 
 
-HepMCReaderMessenger::HepMCReaderMessenger(HepMCReader* agen)
+JetReaderMessenger::JetReaderMessenger(JetReader* agen)
   : m_gen(agen)
 {
-  m_dir= new G4UIdirectory("/generator/hepmcAscii/");
-  m_dir->SetGuidance("Reading HepMC event from an Ascii file");
 
-  m_verbose= new G4UIcmdWithAnInteger("/generator/hepmcAscii/verbose", this);
+  m_dir= new G4UIdirectory("/generator/jetreader/");
+  m_dir->SetGuidance("Reading Jet event from an Werner's ROOT file");
+
+  m_verbose= new G4UIcmdWithAnInteger("/generator/jetreader/verbose", this);
   m_verbose-> SetGuidance("Set verbose level");
   m_verbose-> SetParameterName("verboseLevel", false, false);
   m_verbose-> SetRange("verboseLevel>=0 && verboseLevel<=1");
 
-  m_open= new G4UIcmdWithAString("/generator/hepmcAscii/open", this);
-  m_open-> SetGuidance("(re)open data file (HepMC Ascii format)");
-  m_open-> SetParameterName("input ascii file", true, true);
+  m_open= new G4UIcmdWithAString("/generator/jetreader/open", this);
+  m_open-> SetGuidance("(re)open data file (Jet ROOT format)");
+  m_open-> SetParameterName("input root file", true, true);
 }
 
 
-HepMCReaderMessenger::~HepMCReaderMessenger()
+JetReaderMessenger::~JetReaderMessenger()
 {
   delete m_verbose;
   delete m_open;
@@ -57,20 +58,20 @@ HepMCReaderMessenger::~HepMCReaderMessenger()
 }
 
 
-void HepMCReaderMessenger::SetNewValue(G4UIcommand* command, G4String newValues)
+void JetReaderMessenger::SetNewValue(G4UIcommand* command, G4String newValues)
 {
   if (command==m_verbose) {
     int level= m_verbose-> GetNewIntValue(newValues);
     m_gen-> SetVerboseLevel(level);
   } else if (command==m_open) {
     m_gen-> SetFileName(newValues);
-    G4cout << "HepMC Ascii inputfile: " << m_gen->GetFileName() << G4endl;
+    G4cout << "JetReader root inputfile: " << m_gen->GetFileName() << G4endl;
     m_gen->Initialize();
   }
 }
 
 
-G4String HepMCReaderMessenger::GetCurrentValue(G4UIcommand* command)
+G4String JetReaderMessenger::GetCurrentValue(G4UIcommand* command)
 {
   G4String cv;
   if (command == m_verbose) {

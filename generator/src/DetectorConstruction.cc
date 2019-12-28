@@ -255,7 +255,7 @@ G4VPhysicalVolume* DetectorConstruction::DefineVolumes()
 
   new G4PVPlacement(
                  0,                // no rotation
-                 G4ThreeVector(0,0, calorThickness/2. + tile_calorThickness/2.),  // at (0,0,0)
+                 G4ThreeVector(0,0, calorThickness/2. + tile_calorThickness/2.),  // at (0,0, 74cm)
                  tile_calorLV,          // its logical volume
                  "TileCal",    // its name
                  worldLV,          // its mother  volume
@@ -268,9 +268,9 @@ G4VPhysicalVolume* DetectorConstruction::DefineVolumes()
   // TileCal Layer //96 cm
   //
   G4int tile_nofLayers = 5;
-  G4double tile_absoThickness  = tile_calorThickness/(2*tile_nofLayers);
-  G4double tile_gapThickness   =  tile_calorThickness/(2*tile_nofLayers);
-  G4double tile_layerThickness = tile_absoThickness + tile_gapThickness;
+  G4double tile_absoThickness  = tile_calorThickness/(2*tile_nofLayers); // 10 cm
+  G4double tile_gapThickness   =  tile_calorThickness/(2*tile_nofLayers); // 10 cm
+  G4double tile_layerThickness = tile_absoThickness + tile_gapThickness; // 20 cm
   
   
   G4VSolid* tile_layerS = new G4Box("TileCalLayer",           // its name

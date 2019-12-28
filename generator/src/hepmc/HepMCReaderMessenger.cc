@@ -28,29 +28,28 @@
 #include "G4UIcmdWithoutParameter.hh"
 #include "G4UIcmdWithAString.hh"
 #include "G4UIcmdWithAnInteger.hh"
-#include "jets/JetReaderMessenger.hh"
-#include "jets/JetReader.hh"
+#include "hepmc/HepMCReaderMessenger.hh"
+#include "hepmc/HepMCReader.hh"
 
 
-JetReaderMessenger::JetReaderMessenger(JetReader* agen)
+HepMCReaderMessenger::HepMCReaderMessenger(HepMCReader* agen)
   : m_gen(agen)
 {
+  m_dir= new G4UIdirectory("/generator/hepmcAscii/");
+  m_dir->SetGuidance("Reading HepMC event from an Ascii file");
 
-  m_dir= new G4UIdirectory("/generator/jetreader/");
-  m_dir->SetGuidance("Reading Jet event from an Werner's ROOT file");
-
-  m_verbose= new G4UIcmdWithAnInteger("/generator/jetreader/verbose", this);
+  m_verbose= new G4UIcmdWithAnInteger("/generator/hepmcAscii/verbose", this);
   m_verbose-> SetGuidance("Set verbose level");
   m_verbose-> SetParameterName("verboseLevel", false, false);
   m_verbose-> SetRange("verboseLevel>=0 && verboseLevel<=1");
 
-  m_open= new G4UIcmdWithAString("/generator/jetreader/open", this);
-  m_open-> SetGuidance("(re)open data file (Jet ROOT format)");
-  m_open-> SetParameterName("input root file", true, true);
+  m_open= new G4UIcmdWithAString("/generator/hepmcAscii/open", this);
+  m_open-> SetGuidance("(re)open data file (HepMC Ascii format)");
+  m_open-> SetParameterName("input ascii file", true, true);
 }
 
 
-JetReaderMessenger::~HepMCReaderMessenger()
+HepMCReaderMessenger::~HepMCReaderMessenger()
 {
   delete m_verbose;
   delete m_open;
@@ -58,7 +57,7 @@ JetReaderMessenger::~HepMCReaderMessenger()
 }
 
 
-void JetReaderMessenger::SetNewValue(G4UIcommand* command, G4String newValues)
+void HepMCReaderMessenger::SetNewValue(G4UIcommand* command, G4String newValues)
 {
   if (command==m_verbose) {
     int level= m_verbose-> GetNewIntValue(newValues);
@@ -71,7 +70,7 @@ void JetReaderMessenger::SetNewValue(G4UIcommand* command, G4String newValues)
 }
 
 
-G4String JetReaderMessenger::GetCurrentValue(G4UIcommand* command)
+G4String HepMCReaderMessenger::GetCurrentValue(G4UIcommand* command)
 {
   G4String cv;
   if (command == m_verbose) {

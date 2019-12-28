@@ -24,7 +24,7 @@
 // ********************************************************************
 
 
-#include "HepMCInterface.hh"
+#include "hepmc/HepMCInterface.hh"
 #include "G4RunManager.hh"
 #include "G4LorentzVector.hh"
 #include "G4Event.hh"

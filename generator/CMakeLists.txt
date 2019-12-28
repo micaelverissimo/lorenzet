@@ -23,22 +23,45 @@ include(${Geant4_USE_FILE})
 find_package(HepMC REQUIRED)
 
 
+
+#----------------------------------------------------------------------------
+# Find ROOT (required package)
+find_package(ROOT COMPONENTS EG Eve Geom Gui GuiHtml GenVector Hist Physics Matrix Graf RIO Tree Gpad RGL MathCore)
+include(${ROOT_USE_FILE})
+
 #----------------------------------------------------------------------------
 # Locate sources and headers for this project
 message(${HEPMC_INCLUDE_DIR})
 include_directories(${PROJECT_SOURCE_DIR}/include 
                     ${Geant4_INCLUDE_DIR}
-                    ${HEPMC_INCLUDE_DIR})
-file(GLOB sources ${PROJECT_SOURCE_DIR}/src/*.cc)
-file(GLOB headers ${PROJECT_SOURCE_DIR}/include/*.hh)
+                    ${HEPMC_INCLUDE_DIR}
+                    ${ROOT_INCLUDE_DIRS})
+file(GLOB sources 
+     ${PROJECT_SOURCE_DIR}/src/*.cc
+     ${PROJECT_SOURCE_DIR}/src/hepmc/*.cc
+     ${PROJECT_SOURCE_DIR}/src/jets/*.cc
+  )
+
+file(GLOB headers 
+     ${PROJECT_SOURCE_DIR}/include/*.hh
+     ${PROJECT_SOURCE_DIR}/include/hepmc/*.hh
+     ${PROJECT_SOURCE_DIR}/include/jets/*.hh
+     )
 
 #----------------------------------------------------------------------------
 # Add the executable, and link it to the Geant4 libraries
-message(${HEPMC_LIBRARIES})
-message(${HEPMC_LIBRARIES})
-message(${Geant4_LIBRARIES})
 add_executable(generator generator.cc ${sources} ${headers})
-target_link_libraries(generator ${Geant4_LIBRARIES}
-                      ${HEPMC_LIBRARIES} ${HEPMC_FIO_LIBRARIES}
-                      )
+target_link_libraries(generator ${Geant4_LIBRARIES} ${HEPMC_LIBRARIES} ${HEPMC_FIO_LIBRARIES} ${ROOT_LIBRARIES} )
+
+
+
+
+
+
+
+
+
+
+
+
 

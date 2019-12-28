@@ -1,4 +1,3 @@
-//
 // ********************************************************************
 // * License and Disclaimer                                           *
 // *                                                                  *
@@ -22,47 +21,34 @@
 // * use  in  resulting  scientific  publications,  and indicate your *
 // * acceptance of all terms of the Geant4 Software license.          *
 // ********************************************************************
-//
-/// \file eventgenerator/HepMC/HepMCEx01/src/HepMCG4AsciiReader.cc
-/// \brief Implementation of the HepMCG4AsciiReader class
-//
-//
 
-#include "HepMCReader.hh"
-#include "HepMCReaderMessenger.hh"
 
-#include <iostream>
-#include <fstream>
+#ifndef JETREADERMESSENGER_H
+#define JETREADERMESSENGER_H
 
-HepMCReader::HepMCReader()
-  :  m_filename("hepmc_input.dat"), 
-     m_verbose(0)
-{
+#include "G4UImessenger.hh"
+
+class JetReader;
+class G4UIdirectory;
+class G4UIcmdWithoutParameter;
+class G4UIcmdWithAString;
+class G4UIcmdWithAnInteger;
+
+class JetReaderMessenger : public G4UImessenger {
   
-  m_asciiInput = new HepMC::IO_GenEvent(m_filename.c_str(), std::ios::in);
-  m_messenger= new HepMCReaderMessenger(this);
+  public:
+    JetReaderMessenger(JetReader* agen);
+    ~JetReaderMessenger();
+  
+    void SetNewValue(G4UIcommand* command, G4String newValues);
+    G4String GetCurrentValue(G4UIcommand* command);
+  
+  private:
+    JetReader             *m_gen;
+    G4UIdirectory         *m_dir;
+    G4UIcmdWithAnInteger  *m_verbose;
+    G4UIcmdWithAString    *m_open;
 
-}
+};
 
-
-HepMCReader::~HepMCReader()
-{
-  delete m_asciiInput;
-  delete m_messenger;
-}
-
-
-void HepMCReader::Initialize()
-{
-  delete m_asciiInput;
-  m_asciiInput= new HepMC::IO_GenEvent(m_filename.c_str(), std::ios::in);
-}
-
-
-HepMC::GenEvent* HepMCReader::GenerateHepMCEvent()
-{
-  HepMC::GenEvent* evt= m_asciiInput->read_next_event();
-  if(!evt) return 0;
-  if(m_verbose>0) evt->print();
-  return evt;
-}
+#endif

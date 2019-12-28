@@ -26,39 +26,47 @@
 
 #include "G4Event.hh"
 #include "G4ParticleGun.hh"
-#include "HepMCReader.hh"
+#include "hepmc/HepMCReader.hh"
+#include "jets/JetReader.hh"
 #include "PrimaryGeneratorAction.hh"
 #include "PrimaryGeneratorMessenger.hh"
 #include "G4SystemOfUnits.hh"
 #include "G4ParticleGunMessenger.hh"
 
 
+
+// Multitread support
+//#include "G4AutoLock.hh"
+//namespace { G4Mutex m_mutex = G4MUTEX_INITIALIZER; }
+
+
+
 PrimaryGeneratorAction::PrimaryGeneratorAction(): G4VUserPrimaryGeneratorAction()
 {
-  // default generator is particle gun.
-  auto gun  = new G4ParticleGun();
-  //m_particleGunMessenger = new G4ParticleGunMessenger( gun );
-  m_currentGenerator = m_particleGun = gun;
-
+  //G4AutoLock lock(&m_mutex);
+  //if (m_generatorMap.empty()){
+  m_generatorMap["particleGun"] = new G4ParticleGun();
+  m_generatorMap["hepmcAscii"]  = new HepMCReader();
+  m_generatorMap["jetReader"]   = new JetReader();
+  //}
+  G4cout << "CREATE THE PRIMARY..." << G4endl;
+  G4cout << m_generatorMap["jetReader"]<< G4endl;
+  m_currentGenerator = m_generatorMap["particleGun"];
   m_currentGeneratorName= "particleGun";
-  m_hepmcAscii= new HepMCReader();
-
-  m_gentypeMap["particleGun"] = m_particleGun;
-  m_gentypeMap["hepmcAscii"]  = m_hepmcAscii;
-
   m_messenger= new PrimaryGeneratorMessenger(this);
 }
 
 
 PrimaryGeneratorAction::~PrimaryGeneratorAction()
 {
+  //G4AutoLock lock(&m_mutex);
   delete m_messenger;
-  //delete m_particleGunMessenger;
 }
 
 
 void PrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
 {
+  //G4AutoLock lock(&m_mutex);
   if(m_currentGenerator)
     m_currentGenerator->GeneratePrimaryVertex(anEvent);
   else
@@ -68,4 +76,33 @@ void PrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
 }
 
 
+
+void PrimaryGeneratorAction::SetGenerator(G4VPrimaryGenerator* gen)
+{
+  //G4AutoLock lock(&m_mutex);
+  m_currentGenerator= gen;
+}
+
+void PrimaryGeneratorAction::SetGenerator(G4String genname)
+{
+  //G4AutoLock lock(&m_mutex);
+  std::map<G4String, G4VPrimaryGenerator*>::iterator pos = m_generatorMap.find(genname);
+
+  if(pos != m_generatorMap.end()) {
+    m_currentGenerator= pos->second;
+    m_currentGeneratorName= genname;
+  }
+}
+
+G4VPrimaryGenerator* PrimaryGeneratorAction::GetGenerator() const
+{
+  //G4AutoLock lock(&m_mutex);
+  return m_currentGenerator;
+}
+
+G4String PrimaryGeneratorAction::GetGeneratorName() const
+{
+  //G4AutoLock lock(&m_mutex);
+  return m_currentGeneratorName;
+}
 

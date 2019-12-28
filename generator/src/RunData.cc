@@ -41,11 +41,12 @@ RunData::RunData() : G4Run()//, fNumCells(4815)
   // Create directories 
   analysisManager->SetVerboseLevel(1);
   analysisManager->SetFirstHistoId(1);
-  analysisManager->CreateNtuple("fancy_tree", "Edep and TrackL");
+  analysisManager->CreateNtuple("generator", "Edep and TrackL");
 
 
   // Create all cells branches
-  int total_bins = 504 + 3;  // 3 overflow bins for the three calo layers
+  //int total_bins = 504 + 3;  // 3 overflow bins for the three calo layers
+  int total_bins = 648 + 6;  // 3 overflow bins for the three calo layers
   for (int i = 0; i < total_bins; ++i) {
     std::stringstream out; out << i;
     analysisManager->CreateNtupleDColumn("cell_" + out.str());
@@ -54,12 +55,12 @@ RunData::RunData() : G4Run()//, fNumCells(4815)
 
   // Create the total energy branch
   analysisManager->CreateNtupleDColumn("TotalEnergy");
+
   analysisManager->CreateNtupleDColumn("deposit_x"      , m_deposit_x);
   analysisManager->CreateNtupleDColumn("deposit_y"      , m_deposit_y);
   analysisManager->CreateNtupleDColumn("deposit_z"      , m_deposit_z);
   analysisManager->CreateNtupleDColumn("deposit_energy" , m_deposit_energy);
   analysisManager->FinishNtuple();
-
 
 
   for ( G4int i=0; i < kNumCells; i++) {

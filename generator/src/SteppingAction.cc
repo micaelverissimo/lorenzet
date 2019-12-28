@@ -40,10 +40,40 @@ SteppingAction::~SteppingAction()
 {;}
 
 
+
+// Detector ROI dimesions
+//                (0,0,0)
+//                   |
+//       |--------- EM ----------|----------- HAD ----------|
+//         15cm     30cm     3cm    40cm       40cm    20cm
+//  +    +--------------------------------------------------+
+//  |    |      |           |    |         |         |      |   
+// 48cm  |      |           |    |         |         |      |
+//  |    |      |           |    |         |         |      |
+//  +    +--------------------------------------------------+
+//
 int SteppingAction::WhichZBin(double zpos){
-  if (zpos < -150.) return 0;
-  else if (zpos < 197.) return 1;
-  else return 2;
+
+  // 480mm + 1000mm = 1480mm
+  int offset = 240;
+  zpos = zpos+offset;
+
+  // Total of 80 layers (abs+gap)
+  // 25 layers (EM1) 15 cm
+  // 50 layers (EM2) 30 cm
+  // 15 layers (EM3) 3 cm
+  if (zpos < 150.) return 0;
+  else if (zpos < 450.) return 1;
+  else if (zpos < 480.) return 2;
+
+
+  // Total of 5 layers (abs+gap) 
+  // 2 layers (HAD) 40 cm
+  // 2 layers (HAD) 40 cm
+  // 2 layers (HAD) 20 cm
+  else if (zpos < 880.) return 3;
+  else if (zpos < 1280.) return 4;
+  else return 5;
 }
 
 
@@ -51,16 +81,35 @@ int SteppingAction::WhichZBin(double zpos){
 // define 480 mm X 480 mm X 480 mm as RoI
 int SteppingAction::WhichXYbin(double xpos, double ypos, int zbin){
 
+  // Eletromagnetic 
   int xbin = -1;
   int ybin = -1;
+  // Eletromagnetic 
   int nbins1x = 3;
-  int nbins2x = 12;
-  int nbins3x = 12;
   int nbins1y = 96;
+  // Eletromagnetic 
+  int nbins2x = 12;
   int nbins2y = 12;
+  // Eletromagnetic 
+  int nbins3x = 12;
   int nbins3y = 6;
-  int nbinsx[]={nbins1x,nbins2x,nbins3x};
-  int nbinsy[]={nbins1y,nbins2y,nbins3y};
+
+  // TileCal
+  int nbins4x = 8;
+  int nbins4y = 8;
+  // TileCal
+  int nbins5x = 8;
+  int nbins5y = 8;
+  // TileCal
+  int nbins6x = 4;
+  int nbins6y = 4;
+
+
+
+  int nbinsx[]={nbins1x,nbins2x,nbins3x,nbins4x,nbins5x,nbins6x};
+  int nbinsy[]={nbins1y,nbins2y,nbins3y,nbins4y,nbins5y,nbins6y};
+  
+
   for (int i=1; i<=nbinsx[zbin]; i++){
     if ((xpos < -240 + i*480/nbinsx[zbin]) && (xpos > -240)){
       xbin = i - 1;
@@ -74,23 +123,41 @@ int SteppingAction::WhichXYbin(double xpos, double ypos, int zbin){
     }
   }
 
+  // Eletromagnetic Layers
   int lvl1 = nbins1x * nbins1y;
   int lvl2 = nbins2x * nbins2y;
   int lvl3 = nbins3x * nbins3y;
 
-  if ((xbin == -1) || (ybin == -1)) {
-    return lvl1 + lvl2 + lvl3 + zbin;
+  // Hadronic Layers
+  int lvl4 = nbins4x * nbins4y;
+  int lvl5 = nbins5x * nbins5y;
+  int lvl6 = nbins6x * nbins6y;
+
+
+  // Deposit outside of the RoI
+  if ((xbin == -1) || (ybin == -1)) { // Outlier bins 
+    return lvl1 + lvl2 + lvl3 + lvl4 + lvl5 + lvl6 + zbin;
   }
 
-  if (zbin == 0) {
+  if (zbin == 0) { // Eletromagnetic layer 1
     return xbin * nbins1y + ybin;
   } 
-  else if (zbin == 1) {
+  else if (zbin == 1) { // Eletromagnetic layer 2
     return lvl1 + (xbin * nbins2y + ybin);
   }
-  else {
+  else if (zbin == 2) { // Eletromagnetic layer 3
     return (lvl1 + lvl2) + (xbin * nbins3y + ybin);
   }
+  else if (zbin == 3) { // Hadronic layer 1
+    return (lvl1 + lvl2 + lvl3) + (xbin * nbins4y + ybin);
+  }
+  else if (zbin == 4) { // Hadronic layer 2
+    return (lvl1 + lvl2 + lvl3 + lvl4) + (xbin * nbins5y + ybin);
+  }
+  else{ // Hadronic layer 3
+    return (lvl1 + lvl2 + lvl3 + lvl4 + lvl5) + (xbin * nbins6y + ybin);
+  }
+
 
 
 }

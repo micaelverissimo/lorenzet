@@ -33,13 +33,15 @@
 class ActionInitialization : public G4VUserActionInitialization
 {
   public:
-    ActionInitialization(DetectorConstruction *);
+    ActionInitialization(DetectorConstruction *, G4String output);
     virtual ~ActionInitialization();
 
     virtual void BuildForMaster() const;
     virtual void Build() const;
 
   private:
+
+    G4String m_output;
 };
 
 #endif

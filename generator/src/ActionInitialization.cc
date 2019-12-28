@@ -36,32 +36,32 @@
 #include "G4MTRunManager.hh"
 #include "DetectorConstruction.hh"
 
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+#include "TROOT.h"
 
-ActionInitialization::ActionInitialization(DetectorConstruction * /**/)
- : G4VUserActionInitialization()
-{;}
+ActionInitialization::ActionInitialization(DetectorConstruction * /**/, G4String output)
+ : G4VUserActionInitialization(),
+  m_output(output)
+{
+  // This must be used for multithreading root reader 
+  ROOT::EnableThreadSafety();
+}
 
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
 ActionInitialization::~ActionInitialization()
 {;}
 
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
 void ActionInitialization::BuildForMaster() const
 {
-  SetUserAction(new RunAction);
+  SetUserAction(new RunAction(m_output));
 }
 
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
 void ActionInitialization::Build() const
 {
   SetUserAction(new PrimaryGeneratorAction());
-  SetUserAction(new RunAction());
+  SetUserAction(new RunAction(m_output));
   SetUserAction(new EventAction());
   SetUserAction(new SteppingAction());
 }  
 
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......

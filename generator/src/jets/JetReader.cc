@@ -22,14 +22,18 @@
 // * use  in  resulting  scientific  publications,  and indicate your *
 // * acceptance of all terms of the Geant4 Software license.          *
 // ********************************************************************
-//
-/// \file eventgenerator/HepMC/HepMCEx01/src/HepMCG4AsciiReader.cc
-/// \brief Implementation of the HepMCG4AsciiReader class
-//
-//
 
 #include "jets/JetReader.hh"
 #include "jets/JetReaderMessenger.hh"
+#include "G4RunManager.hh"
+#include "G4LorentzVector.hh"
+#include "G4Event.hh"
+#include "G4PrimaryParticle.hh"
+#include "G4PrimaryVertex.hh"
+#include "G4TransportationManager.hh"
+#include "G4PhysicalConstants.hh"
+#include "G4SystemOfUnits.hh"
+
 
 #include <iostream>
 #include <fstream>
@@ -41,7 +45,6 @@ JetReader::JetReader()
 {
   m_messenger= new JetReaderMessenger(this);
 }
-
 
 JetReader::~JetReader()
 {
@@ -56,15 +59,12 @@ JetReader::~JetReader()
 void JetReader::Initialize()
 {
   // Get the ttree from the root file
-  G4cout << "Open the root file: " << m_filename << G4end;
-  m_f = new TFile( m_filename , "read" )
+  G4cout << "Open the root file: " << m_filename << G4endl;
+  m_f = new TFile( m_filename , "read" );
   m_ttree = (TTree*)m_f->Get("t");
   m_evt=0;
-  G4cout << "Link all branches..." << G4endl;
   link( m_ttree );
-  G4cout << "Allocate..." << G4endl;
-  alloc();
-  G4cout << "Done" << G4endl;
+  allocate();
 }
 
 
@@ -100,7 +100,7 @@ void JetReader::link(TTree *t){
   InitBranch( t, "jet_py"				,      &m_jet_py				);
   InitBranch( t, "jet_pz"				,      &m_jet_pz				);
   InitBranch( t, "jet_electron_photon_e_frac",&m_jet_electron_photon_e_frac);
-
+  InitBranch( t, "jet_n_part"		,      &m_jet_n_part		);
   InitBranch( t, "s_pdg_id"			,      &m_s_pdg_id			);
   InitBranch( t, "s_orig_e"			,      &m_s_orig_e			);
   InitBranch( t, "s_orig_et"		,      &m_s_orig_et			);
@@ -108,7 +108,7 @@ void JetReader::link(TTree *t){
   InitBranch( t, "s_orig_phi"		,      &m_s_orig_phi		);
   InitBranch( t, "s_px"					,      &m_s_px					);
   InitBranch( t, "s_py"					,      &m_s_py					);
-  InitBranch( t, "s_px"					,      &m_s_pz					);
+  InitBranch( t, "s_pz"					,      &m_s_pz					);
   InitBranch( t, "s_prod_x"			,      &m_s_prod_x			);
   InitBranch( t, "s_prod_y"			,      &m_s_prod_y			);
   InitBranch( t, "s_prod_z"			,      &m_s_prod_z			);
@@ -143,13 +143,13 @@ void JetReader::clear(){
 }
 
 
-void JetReader::alloc(){
+void JetReader::allocate(){
 
+  m_s_pdg_id		= new std::vector<int>();
   m_s_orig_e		= new std::vector<float>();
   m_s_orig_et		= new std::vector<float>();
   m_s_orig_eta	= new std::vector<float>();
   m_s_orig_phi	= new std::vector<float>();
-  m_s_pdg_id		= new std::vector<float>();
   m_s_px				= new std::vector<float>();
   m_s_py				= new std::vector<float>();
   m_s_pz				= new std::vector<float>();
@@ -183,14 +183,13 @@ void JetReader::GeneratePrimaryVertex( G4Event* anEvent )
 {
   // clear the old event one;
   clear();
-
+  m_evt = anEvent->GetEventID();
   // Check if we have an event inside of the root three
   if ( m_evt <  m_ttree->GetEntries() ){
-
+    G4cout << " Get event (JetReader) with number "<< m_evt << G4endl;
     m_ttree->GetEntry(m_evt);
     Convert( anEvent );
-    m_evt++;
-
+    //m_evt++;
   }else{
     G4cout << "JetReader: no generated particles. run terminated..." << G4endl;
     G4RunManager::GetRunManager()->AbortRun();
@@ -222,6 +221,7 @@ void JetReader::Convert( G4Event* g4event )
 
   for ( unsigned int i=0; i < m_jet_n_part; ++i )
   {
+
     G4LorentzVector xvtx( m_s_prod_x->at(i), m_s_prod_y->at(i), m_s_prod_z->at(i), 0.0);
     G4PrimaryVertex* g4vtx= new G4PrimaryVertex(xvtx.x()*mm, xvtx.y()*mm, xvtx.z()*mm, xvtx.t()*mm/c_light);
     

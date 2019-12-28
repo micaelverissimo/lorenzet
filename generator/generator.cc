@@ -54,7 +54,7 @@
 namespace {
   void PrintUsage() {
     G4cerr << " Usage: " << G4endl;
-    G4cerr << " examplea [-m macro ] [-u UIsession] [-t nThreads]" << G4endl;
+    G4cerr << " example: [-m macro ] [-u UIsession] [-t nThreads] [-o Output]" << G4endl;
     G4cerr << "   note: -t option is available only for multi-threaded mode."
            << G4endl;
   }
@@ -73,12 +73,15 @@ int main(int argc,char** argv)
 
   G4String macro;
   G4String session;
+  G4String output = "generator.root";
+
 #ifdef G4MULTITHREADED
   G4int nThreads = 0;
 #endif
   for ( G4int i=1; i<argc; i=i+2 ) {
     if      ( G4String(argv[i]) == "-m" ) macro = argv[i+1];
     else if ( G4String(argv[i]) == "-u" ) session = argv[i+1];
+    else if ( G4String(argv[i]) == "-o" ) output = argv[i+1];
 #ifdef G4MULTITHREADED
     else if ( G4String(argv[i]) == "-t" ) {
       nThreads = G4UIcommand::ConvertToInt(argv[i+1]);
@@ -123,7 +126,7 @@ int main(int argc,char** argv)
   runManager->SetUserInitialization(physicsList);
 
   ActionInitialization* actionInitialization
-     = new ActionInitialization(detConstruction);
+     = new ActionInitialization(detConstruction, output);
   runManager->SetUserInitialization(actionInitialization);
 
   // Initialize visualization
@@ -143,7 +146,7 @@ int main(int argc,char** argv)
     UImanager->ApplyCommand(command+macro);
   } else  {
     // interactive mode : define UI session
-    UImanager->ApplyCommand("/control/execute init_vis.mac");
+    UImanager->ApplyCommand("/control/execute include/init_vis.mac");
     // if (ui->IsGUI()) {
     //   UImanager->ApplyCommand("/control/execute gui.mac");
     // }

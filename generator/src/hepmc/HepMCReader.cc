@@ -28,8 +28,8 @@
 //
 //
 
-#include "HepMCReader.hh"
-#include "HepMCReaderMessenger.hh"
+#include "hepmc/HepMCReader.hh"
+#include "hepmc/HepMCReaderMessenger.hh"
 
 #include <iostream>
 #include <fstream>

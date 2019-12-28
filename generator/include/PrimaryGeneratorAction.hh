@@ -24,8 +24,8 @@
 // ********************************************************************
 
 
-#ifndef H02_PRIMARY_GENERATOR_ACTION_H
-#define H02_PRIMARY_GENERATOR_ACTION_H
+#ifndef PRIMARYGENERATORACTION_H
+#define PRIMARYGENERATORACTION_H
 
 #include <map>
 #include "globals.hh"
@@ -35,6 +35,8 @@
 class G4Event;
 class G4VPrimaryGenerator;
 class PrimaryGeneratorMessenger;
+
+
 
 class PrimaryGeneratorAction : public G4VUserPrimaryGeneratorAction {
   public:
@@ -52,42 +54,16 @@ class PrimaryGeneratorAction : public G4VUserPrimaryGeneratorAction {
   
   private:
 
-    G4VPrimaryGenerator *m_particleGun;
-    G4VPrimaryGenerator *m_hepmcAscii;
   
     G4VPrimaryGenerator                       *m_currentGenerator;
     G4String                                   m_currentGeneratorName;
-    std::map<G4String, G4VPrimaryGenerator*>   m_gentypeMap;
     PrimaryGeneratorMessenger                 *m_messenger;
-    //G4ParticleGunMessenger                    *m_particleGunMessenger;
+
+    std::map<G4String, G4VPrimaryGenerator*>   m_generatorMap;
+
 };
 
 
 
-
-inline void PrimaryGeneratorAction::SetGenerator(G4VPrimaryGenerator* gen)
-{
-  m_currentGenerator= gen;
-}
-
-inline void PrimaryGeneratorAction::SetGenerator(G4String genname)
-{
-  std::map<G4String, G4VPrimaryGenerator*>::iterator pos = m_gentypeMap.find(genname);
-
-  if(pos != m_gentypeMap.end()) {
-    m_currentGenerator= pos->second;
-    m_currentGeneratorName= genname;
-  }
-}
-
-inline G4VPrimaryGenerator* PrimaryGeneratorAction::GetGenerator() const
-{
-  return m_currentGenerator;
-}
-
-inline G4String PrimaryGeneratorAction::GetGeneratorName() const
-{
-  return m_currentGeneratorName;
-}
 
 #endif

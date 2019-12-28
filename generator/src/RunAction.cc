@@ -30,14 +30,11 @@
 #include "G4RunManager.hh"
 #include "G4UnitsTable.hh"
 #include "G4SystemOfUnits.hh"
-#include <sstream>
-#include <ostream>
-#include "Randomize.hh"
 
-RunAction::RunAction()
- : G4UserRunAction()
-{ 
-}
+RunAction::RunAction( G4String output)
+ : G4UserRunAction(),
+  m_output(output)
+{;}
 
 
 RunAction::~RunAction()
@@ -56,11 +53,8 @@ void RunAction::BeginOfRunAction(const G4Run* run)
 { 
   G4cout << "### Run " << run->GetRunID() << " start." << G4endl;
   G4AnalysisManager* analysisManager = G4AnalysisManager::Instance();
-  G4int u = G4UniformRand() * 1000;
-  
-  std::ostringstream strs;
-  strs << "g4_simulation."<< u << ".root";
-  analysisManager->OpenFile(strs.str());
+  analysisManager->OpenFile(m_output);
+
 }
 
 
