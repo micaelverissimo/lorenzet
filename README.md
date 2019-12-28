@@ -8,7 +8,9 @@ learning studies.
 ## Detector construction:
 
 It's a composite calorimeter with eletromagnet and hadronic layers. 
+![Lateral Calorimeter view](https://github.com/jodafons/lorenzet/blob/master/figures/lateral_view_jets.pdf)
 
+Description:
 - 100cm X 100cm with face (x,y);
 - We considere a face of 48 cm as Region of interesti (x,y);
 - We always shot the particle in the center of the (x,y) face;
@@ -19,9 +21,11 @@ It's a composite calorimeter with eletromagnet and hadronic layers.
 - Second HAD layer with 40 cm depth (z) and 2 segments (layers) of Cesium iodide and iron ( 8 x 8 cells); 
 - Third HAD layer with 20 cm depth (z) and 1 segments (layers) of Cesium iodide and iron ( 4 x 4 cells); 
 
-![Lateral Calorimeter view](https://github.com/jodafons/lorenzet/blob/master/figures/lateral_view_jets.pdf)
 
-For mode information about the detector granularity: https://github.com/jodafons/lorenzet/blob/master/src/SteppingAction.cc
+
+
+
+
 
 
 ## Requirements:
