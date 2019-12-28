@@ -7,8 +7,9 @@ learning studies.
 
 ## Detector construction:
 
-It's a composite calorimeter with eletromagnet and hadronic layers. 
-![Lateral Calorimeter view](https://github.com/jodafons/lorenzet/blob/master/figures/lateral_view_jets.pdf)
+It's a composite calorimeter with eletromagnet and hadronic layers. See the 
+![Lateral Calorimeter view](https://github.com/jodafons/lorenzet/blob/master/figures/lateral_view_jets.pdf) for more details.
+
 
 Description:
 - 100cm X 100cm with face (x,y);
