@@ -22,6 +22,9 @@ It's a composite calorimeter with eletromagnet and hadronic layers.
 For mode information about the detector granularity: https://github.com/jodafons/lorenzet/blob/master/src/SteppingAction.cc
 
 
+![2D shower in the calorimeter](/docs/lateral_view_jets.pdf)
+
+
 ## Requirements:
 
 - Geant4 (opengl or qt4 is required for graphic interface, https://github.com/jodafons/geant4.git);
