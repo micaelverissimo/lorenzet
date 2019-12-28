@@ -26,9 +26,9 @@ For mode information about the detector granularity: https://github.com/jodafons
 
 [embed]https://github.com/jodafons/lorenzet/blob/master/docs/lateral_view_jets.pdf[/embed]
 
-<object data="https://github.com/jodafons/lorenzet/blob/master/docs/lateral_view_jets.pdf" type="application/pdf" width="700px" height="700px">
-    <embed src="https://github.com/jodafons/lorenzet/blob/master/docs/lateral_view_jets.pdf">
-        <p>This browser does not support PDFs. Please download the PDF to view it: <a href="http://yoursite.com/the.pdf">Download PDF</a>.</p>
+<object data="https://drive.google.com/file/d/1vzx4OL9fSGraJ6EFjJl6pcZ_uIbWcykK/view?usp=sharing" type="application/pdf" width="700px" height="700px">
+    <embed src="https://drive.google.com/file/d/1vzx4OL9fSGraJ6EFjJl6pcZ_uIbWcykK/view?usp=sharing">
+        <p>This browser does not support PDFs. Please download the PDF to view it: <a href="https://drive.google.com/file/d/1vzx4OL9fSGraJ6EFjJl6pcZ_uIbWcykK/view?usp=sharing">Download PDF</a>.</p>
     </embed>
 </object>
 
