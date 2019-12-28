@@ -33,9 +33,35 @@ For mode information about the detector granularity: https://github.com/jodafons
 
 ## Installation
 
+Use this example to build your hep installation in your local machine.
+The path for each HEP package depends of your local installation
 
 
-## Usage
+```bash
+# ROOT
+source ~/.bin/root/build_root/bin/thisroot.sh
+# geant4
+cd ~/.bin/geant4_10.5/build
+source geant4.sh
+cd ~
+# hepmc
+export HEPMC_INCLUDE=/Users/jodafons/.bin/HepMC/HepMC-2.06.09/HepMC
+export HEPMC_LIBRARY=/Users/jodafons/.bin/HepMC/build/lib
+export DYLD_LIBRARY_PATH=$DYLD_LIBRARY_PATH:$HEPMC_LIBRARY
+# pythia
+export PYTHIA8_INCLUDE=/Users/jodafons/.bin/pythia8244/include
+export PYTHIA8_LIBRARY=/Users/jodafons/.bin/pythia8244/lib
+#fastjet
+export FASTJET_INCLUDE=/Users/jodafons/.bin/fastjet-3.3.3/include
+export FASTJET_LIBRARY=/Users/jodafons/.bin/fastjet-3.3.3/lib
+# ROOT extra envs
+export ROOT_INCLUDE=/Users/jodafons/.bin/root/build_root/include
+export ROOT_LIBRARY=/Users/jodafons/.bin/root/build_root/lib
+```
+
+
+
+
 
 
 
