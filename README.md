@@ -22,7 +22,7 @@ It's a composite calorimeter with eletromagnet and hadronic layers.
 For mode information about the detector granularity: https://github.com/jodafons/lorenzet/blob/master/src/SteppingAction.cc
 
 
-![2D shower in the calorimeter](/docs/lateral_view.eps)
+![2D shower in the calorimeter](https://drive.google.com/file/d/1vzx4OL9fSGraJ6EFjJl6pcZ_uIbWcykK/view?usp=sharing)
 
 [embed]https://github.com/jodafons/lorenzet/blob/master/docs/lateral_view_jets.pdf[/embed]
 
