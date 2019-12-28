@@ -5,7 +5,7 @@ learning studies.
 
 
 
-## Detector construction
+## Detector construction:
 
 It's a composite calorimeter with eletromagnet and hadronic layers. 
 
@@ -22,7 +22,7 @@ It's a composite calorimeter with eletromagnet and hadronic layers.
 For mode information about the detector granularity: https://github.com/jodafons/lorenzet/blob/master/src/SteppingAction.cc
 
 
-## Requirements
+## Requirements:
 
 - Geant4 (opengl or qt4 is required for graphic interface, https://github.com/jodafons/geant4.git);
 - ROOT (https://github.com/root-project/root.git);
@@ -31,7 +31,7 @@ For mode information about the detector granularity: https://github.com/jodafons
 - FastJet (https://github.com/jodafons/fastjet.git).
 
 
-## Installation
+## Installation:
 
 Use this example to build your hep installation in your local machine.
 The path for each HEP package depends of your local installation
@@ -59,10 +59,31 @@ export ROOT_INCLUDE=/Users/jodafons/.bin/root/build_root/include
 export ROOT_LIBRARY=/Users/jodafons/.bin/root/build_root/lib
 ```
 
+### Compile the simulator package:
+
+The simulator will use this envirements to locate all necessary infomation to build and
+link all dependencies. After you install all dependencies and set all necessary envirementes 
+just compile the simulator package using the follow commands.
 
 
+```bash
+mkdir build && cd build
+cmake ..
+make
+```
+
+### Compile the pythia jet maker:
+
+This sub package is used to create jet patcicles using pythia and dump this information
+inside a ttree. This root file will be used by the gnerator to read all jets and propagate
+this particles throut out the calorimeter.
+
+```bash
+make jet_maker
+```
 
 
+## Usage:
 
 
 
