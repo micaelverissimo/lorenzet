@@ -25,6 +25,12 @@ For mode information about the detector granularity: https://github.com/jodafons
 ![2D shower in the calorimeter](/docs/lateral_view.png)
 
 
+<object data="https://github.com/jodafons/lorenzet/blob/master/docs/lateral_view_jets.pdf" type="application/pdf" width="700px" height="700px">
+    <embed src="https://github.com/jodafons/lorenzet/blob/master/docs/lateral_view_jets.pdf">
+        <p>This browser does not support PDFs. Please download the PDF to view it: <a href="http://yoursite.com/the.pdf">Download PDF</a>.</p>
+    </embed>
+</object>
+
 ## Requirements:
 
 - Geant4 (opengl or qt4 is required for graphic interface, https://github.com/jodafons/geant4.git);
