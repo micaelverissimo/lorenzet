@@ -47,14 +47,14 @@
 
 #include "G4VisExecutive.hh"
 #include "G4UIExecutive.hh"
-
+#include <iostream>
 #include "time.h"
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
 namespace {
   void PrintUsage() {
     G4cerr << " Usage: " << G4endl;
-    G4cerr << " example: [-m macro ] [-u UIsession] [-t nThreads] [-o Output]" << G4endl;
+    G4cerr << " example: [-m macro ] [-t nThreads] [-o Output]" << G4endl;
     G4cerr << "   note: -t option is available only for multi-threaded mode."
            << G4endl;
   }
@@ -72,7 +72,6 @@ int main(int argc,char** argv)
   }
 
   G4String macro;
-  G4String session;
   G4String output = "generator.root";
 
 #ifdef G4MULTITHREADED
@@ -80,7 +79,7 @@ int main(int argc,char** argv)
 #endif
   for ( G4int i=1; i<argc; i=i+2 ) {
     if      ( G4String(argv[i]) == "-m" ) macro = argv[i+1];
-    else if ( G4String(argv[i]) == "-u" ) session = argv[i+1];
+    //else if ( G4String(argv[i]) == "-u" ){session = true; i--;}
     else if ( G4String(argv[i]) == "-o" ) output = argv[i+1];
 #ifdef G4MULTITHREADED
     else if ( G4String(argv[i]) == "-t" ) {
@@ -125,8 +124,7 @@ int main(int argc,char** argv)
   G4VModularPhysicsList* physicsList = new FTFP_BERT;
   runManager->SetUserInitialization(physicsList);
 
-  ActionInitialization* actionInitialization
-     = new ActionInitialization(detConstruction, output);
+  ActionInitialization* actionInitialization = new ActionInitialization(detConstruction, output);
   runManager->SetUserInitialization(actionInitialization);
 
   // Initialize visualization
@@ -137,6 +135,7 @@ int main(int argc,char** argv)
 
   // Get the pointer to the User Interface manager
   G4UImanager* UImanager = G4UImanager::GetUIpointer();
+
 
 
   // Process macro or start UI session
@@ -154,10 +153,7 @@ int main(int argc,char** argv)
     delete ui;
   }
 
-  // Job termination
-  // Free the store: user actions, physics_list and detector_description are
-  // owned and deleted by the run manager, so they should not be deleted
-  // in the main() program !
+
 
   delete visManager;
   delete runManager;

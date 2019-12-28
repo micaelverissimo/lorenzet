@@ -1,8 +1,9 @@
 
-
 # Set the shell.
 SHELL=/usr/bin/env bash
 
+# Include the configuration.
+-include Makefile.inc
 
 # Handle GZIP support.
 GZIP_INC=
@@ -12,13 +13,8 @@ ifeq ($(GZIP_USE),true)
   GZIP_FLAGS+= -L$(GZIP_LIB) -Wl,-rpath,$(GZIP_LIB) -lz
 endif
 
-PREFIX_LIB=$(PYTHIA_LIB)
-PREFIX_INCLUDE=$(PYTHIA_INCLUDE)
-CXX_COMMON:=-I$(PREFIX_INCLUDE) $(CXX_COMMON)
-CXX_COMMON+= -L$(PREFIX_LIB) -Wl,-rpath,$(PREFIX_LIB) -lpythia8 -ldl -lHepMC 
-
-
-
+CXX_COMMON:=-I$(PYTHIA8_INCLUDE) $(CXX_COMMON)
+CXX_COMMON+= -L$(PYTHIA8_LIBRARY) -Wl,-rpath,$(PYTHIA8_LIBRARY) -lpythia8 -ldl -std=c++11
 
 
 # Rules without physical targets (secondary expansion for specific rules).
@@ -27,20 +23,29 @@ CXX_COMMON+= -L$(PREFIX_LIB) -Wl,-rpath,$(PREFIX_LIB) -lpythia8 -ldl -lHepMC
 
 # All targets (no default behavior).
 all:
-	@echo "Usage: make mainXX"
+	@echo "Usage: make jet_maker"
 
 
 
-# User-written examples for tutorials, without external dependencies.
-example : example.cc $(PREFIX_LIB)/libpythia8.a $(HEPMC_LIB)/libHepMC.so.4 
-	$(CXX) $< -o $@ $(CXX_COMMON) $(GZIP_INC) $(GZIP_FLAGS)
+
+# FASTJET3 and HEPMC2.
+jet_maker: jet_maker.cc $(PYTHIA8_LIBRARY)/libpythia8.a
+	$(CXX) $< -o $@ -I$(FASTJET_INCLUDE) -I$(HEPMC_INCLUDE) -I$(ROOT_INCLUDE) -L$(ROOT_LIBRARY) $(CXX_COMMON)\
+	 -L$(HEPMC_LIBRARY) -lHepMC -L$(FASTJET_LIBRARY) -lfastjet \
+	  $(GZIP_INC) $(GZIP_FLAGS) -lCore -lImt -lRIO -lNet -lHist -lGraf -lGraf3d -lGpad -lROOTVecOps -lTree -lTreePlayer -lRint -lPostscript \
+  -lMatrix -lPhysics -lMathCore -lThread -lMultiProc -lROOTDataFrame -lpthread -stdlib=libc++ -lm -ldl
 
 
-# Clean.
-clean:
-	@rm -f main[0-9][0-9]; rm -f out[0-9][0-9];\
-	rm -f main[0-9][0-9][0-9]; rm -f out[0-9][0-9][0-9];\
-	rm -f mymain[0-9][0-9]; rm -f myout[0-9][0-9];\
-	rm -f test[0-9][0-9][0-9]; rm -f *.dat;\
-	rm -f weakbosons.lhe; rm -f Pythia8.promc; rm -f hist.root;\
-	rm -f *~; rm -f \#*; rm -f core*; rm -f *Dct.*; rm -f *.so;
+
+
+## FASTJET3 and HEPMC2.
+#jet_maker: jet_maker.cc $(PYTHIA8_LIBRARY)/libpythia8.a
+#	$(CXX) $< -o $@ -I$(FASTJET_INCLUDE) -I$(HEPMC_INCLUDE) -I$(ROOT_INCLUDE) -L$(ROOT_LIBRARY) $(CXX_COMMON)\
+#	 -L$(HEPMC_LIBRARY) -Wl,-rpath,$(HEPMC_LIBRARY) -lHepMC\
+#	 -L$(FASTJET_LIBRARY) -Wl,-rpath,$(FASTJET_LIBRARY) -lfastjet\
+#	  $(GZIP_INC) $(GZIP_FLAGS) -lCore -lImt -lRIO -lNet -lHist -lGraf -lGraf3d -lGpad -lROOTVecOps -lTree -lTreePlayer -lRint -lPostscript \
+#  -lMatrix -lPhysics -lMathCore -lThread -lMultiProc -lROOTDataFrame -lpthread -stdlib=libc++ -lm -ldl
+
+
+
+

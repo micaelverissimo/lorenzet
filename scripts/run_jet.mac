@@ -1,0 +1,12 @@
+
+/run/initialize
+/run/printProgress 1
+/run/verbose 2
+
+/generator/select jetReader
+/generator/jetreader/open pythia.root
+/generator/jetreader/verbose 1
+
+
+/run/beamOn 1000
+
