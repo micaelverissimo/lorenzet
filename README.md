@@ -19,18 +19,14 @@ It's a composite calorimeter with eletromagnet and hadronic layers.
 - Second HAD layer with 40 cm depth (z) and 2 segments (layers) of Cesium iodide and iron ( 8 x 8 cells); 
 - Third HAD layer with 20 cm depth (z) and 1 segments (layers) of Cesium iodide and iron ( 4 x 4 cells); 
 
+
+
+
+![2D shower in the calorimeter](https://github.com/jodafons/lorenzet/blob/master/docs/lateral_view.png)
+
+
 For mode information about the detector granularity: https://github.com/jodafons/lorenzet/blob/master/src/SteppingAction.cc
 
-
-![2D shower in the calorimeter](https://drive.google.com/file/d/1vzx4OL9fSGraJ6EFjJl6pcZ_uIbWcykK/view?usp=sharing)
-
-[embed]https://github.com/jodafons/lorenzet/blob/master/docs/lateral_view_jets.pdf[/embed]
-
-<object data="https://drive.google.com/file/d/1vzx4OL9fSGraJ6EFjJl6pcZ_uIbWcykK/view?usp=sharing" type="application/pdf" width="700px" height="700px">
-    <embed src="https://drive.google.com/file/d/1vzx4OL9fSGraJ6EFjJl6pcZ_uIbWcykK/view?usp=sharing">
-        <p>This browser does not support PDFs. Please download the PDF to view it: <a href="https://drive.google.com/file/d/1vzx4OL9fSGraJ6EFjJl6pcZ_uIbWcykK/view?usp=sharing">Download PDF</a>.</p>
-    </embed>
-</object>
 
 ## Requirements:
 
