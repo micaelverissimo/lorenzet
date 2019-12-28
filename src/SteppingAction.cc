@@ -30,9 +30,9 @@
 #include "G4RunManager.hh"
 
 
-SteppingAction::SteppingAction( )
+SteppingAction::SteppingAction( bool save_deposit)
   : G4UserSteppingAction(),
-    m_saveDeposit(false)
+    m_saveDeposit(save_deposit)
 {;}
 
 

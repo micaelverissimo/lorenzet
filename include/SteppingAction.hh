@@ -39,7 +39,7 @@ class DetectorConstruction;
 class SteppingAction : public G4UserSteppingAction
 {
   public:
-    SteppingAction();
+    SteppingAction( bool save_deposit);
     virtual ~SteppingAction();
   
     virtual void UserSteppingAction(const G4Step* step);

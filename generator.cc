@@ -54,7 +54,7 @@
 namespace {
   void PrintUsage() {
     G4cerr << " Usage: " << G4endl;
-    G4cerr << " example: [-m macro ] [-t nThreads] [-o Output]" << G4endl;
+    G4cerr << " example: [-m macro ] [-t nThreads] [-o Output] [--save_deposit]" << G4endl;
     G4cerr << "   note: -t option is available only for multi-threaded mode."
            << G4endl;
   }
@@ -73,6 +73,8 @@ int main(int argc,char** argv)
 
   G4String macro;
   G4String output = "generator.root";
+  bool save_deposit = false;
+
 
 #ifdef G4MULTITHREADED
   G4int nThreads = 0;
@@ -80,6 +82,7 @@ int main(int argc,char** argv)
   for ( G4int i=1; i<argc; i=i+2 ) {
     if      ( G4String(argv[i]) == "-m" ) macro = argv[i+1];
     //else if ( G4String(argv[i]) == "-u" ){session = true; i--;}
+    else if ( G4String(argv[i]) == "--save_deposit" ){save_deposit = true; i--;}
     else if ( G4String(argv[i]) == "-o" ) output = argv[i+1];
 #ifdef G4MULTITHREADED
     else if ( G4String(argv[i]) == "-t" ) {
@@ -124,7 +127,7 @@ int main(int argc,char** argv)
   G4VModularPhysicsList* physicsList = new FTFP_BERT;
   runManager->SetUserInitialization(physicsList);
 
-  ActionInitialization* actionInitialization = new ActionInitialization(detConstruction, output);
+  ActionInitialization* actionInitialization = new ActionInitialization(detConstruction, output, save_deposit);
   runManager->SetUserInitialization(actionInitialization);
 
   // Initialize visualization

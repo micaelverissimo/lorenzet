@@ -38,9 +38,10 @@
 
 #include "TROOT.h"
 
-ActionInitialization::ActionInitialization(DetectorConstruction * /**/, G4String output)
+ActionInitialization::ActionInitialization(DetectorConstruction * /**/, G4String output, bool save_deposit)
  : G4VUserActionInitialization(),
-  m_output(output)
+  m_output(output),
+  m_save_deposit(save_deposit)
 {
   // This must be used for multithreading root reader 
   ROOT::EnableThreadSafety();
@@ -59,9 +60,10 @@ void ActionInitialization::BuildForMaster() const
 
 void ActionInitialization::Build() const
 {
+  // Create and configure all primary tools and services
   SetUserAction(new PrimaryGeneratorAction());
   SetUserAction(new RunAction(m_output));
   SetUserAction(new EventAction());
-  SetUserAction(new SteppingAction());
+  SetUserAction(new SteppingAction(m_save_deposit));
 }  
 
