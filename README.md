@@ -24,6 +24,7 @@ For mode information about the detector granularity: https://github.com/jodafons
 
 ![2D shower in the calorimeter](/docs/lateral_view.png)
 
+[embed]https://github.com/jodafons/lorenzet/blob/master/docs/lateral_view_jets.pdf[/embed]
 
 <object data="https://github.com/jodafons/lorenzet/blob/master/docs/lateral_view_jets.pdf" type="application/pdf" width="700px" height="700px">
     <embed src="https://github.com/jodafons/lorenzet/blob/master/docs/lateral_view_jets.pdf">
