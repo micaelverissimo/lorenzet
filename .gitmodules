@@ -1,0 +1,6 @@
+[submodule "External/monet"]
+	path = External/monet
+	url = https://github.com/jodafons/monet.git
+[submodule "Gaugi"]
+	path = Gaugi
+	url = https://github.com/jodafons/gaugi.git

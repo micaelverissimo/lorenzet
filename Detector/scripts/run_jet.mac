@@ -8,5 +8,6 @@
 /generator/jetreader/verbose 1
 
 
-/run/beamOn 500
+/run/beamOn 1
+
 
