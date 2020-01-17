@@ -461,7 +461,8 @@ int main() {
       getParticlesToTarget( jet_data, newCenter, targetDirection );
       // Fill jet data
       const auto& jet = jet_data.fastjet_pseudojet;
-      const auto& jet_rotated = jet_data.fastjet_rotated_pseudojet;
+      //const auto& jet_rotated = jet_data.fastjet_rotated_pseudojet;
+      const auto& jet_rotated = jet_data.fastjet_pseudojet;
       jet_orig_eta = jet.eta(); jet_orig_phi = jet.phi();
       jet_px = jet_rotated.px(); jet_py = jet_rotated.py(); jet_pz = jet_rotated.pz();
       jet_orig_e = jet.e(); jet_orig_et = jet.Et();

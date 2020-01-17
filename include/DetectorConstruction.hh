@@ -32,6 +32,7 @@
 #define DetectorConstruction_h 1
 
 #include "G4VUserDetectorConstruction.hh"
+#include "G4Material.hh"
 #include "globals.hh"
 
 class G4VPhysicalVolume;
@@ -70,7 +71,24 @@ class DetectorConstruction : public G4VUserDetectorConstruction
     // methods
     void DefineMaterials();
     G4VPhysicalVolume* DefineVolumes();
-  
+
+
+    void CreateBarrel(  G4LogicalVolume *worldLV, 
+                        G4String name,  
+                        G4Material *defaltMaterial,
+                        G4Material *absorberMaterial,
+                        G4Material *gapMaterial,
+                        G4int nofLayers,
+                        G4double absoThickness,
+                        G4double gapThickness,
+                        G4double calorRmin,
+                        G4double calorZ
+                        ); 
+
+
+
+
+
     static G4ThreadLocal G4GlobalMagFieldMessenger*  m_magFieldMessenger; // magnetic field messenger
     G4VPhysicalVolume *m_absorberPV; // the absorber physical volume
     G4VPhysicalVolume *m_gapPV; // the gap physical volume

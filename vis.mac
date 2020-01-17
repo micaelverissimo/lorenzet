@@ -14,11 +14,11 @@
 /vis/modeling/trajectories/drawByCharge-0/default/setStepPtsSize 2
 /vis/scene/endOfEventAction accumulate
 /vis/geometry/set/visibility World 0 false
-/vis/geometry/set/colour Calorimeter 0 green
-/vis/geometry/set/colour Abso 0 red
-/vis/geometry/set/colour TileCal 0 yellow
-/vis/geometry/set/colour TileCalLayer 0 blue
-/vis/geometry/set/colour TileCalAbso 0 red
+#/vis/geometry/set/colour ECal 0 green
+/vis/geometry/set/colour ECal_Abso 0 red
+#/vis/geometry/set/colour HCal 0 yellow
+#/vis/geometry/set/colour HCal_Layer 0 blue
+/vis/geometry/set/colour HCal_Abso 0 green
 /vis/viewer/set/autoRefresh true
 /vis/verbose warnings
 
@@ -29,8 +29,8 @@
 /generator/select particleGun
 /gun/particle e-
 /gun/energy 20 GeV
-/gun/position 0.0 0.0 -200
-/gun/direction 0 0 1
+/gun/position 0.0 0.0 0.0
+/gun/direction 0 1 1
 /gun/number 10 
 /run/beamOn 1
 
@@ -42,6 +42,11 @@
 #/generator/jetreader/open pythia.root
 #/generator/jetreader/verbose 1
 #/run/beamOn 1
+
+
+
+
+
 #############################################
 
 
