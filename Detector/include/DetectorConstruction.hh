@@ -33,6 +33,7 @@
 
 #include "G4VUserDetectorConstruction.hh"
 #include "G4Material.hh"
+#include "G4ThreeVector.hh"
 #include "globals.hh"
 
 class G4VPhysicalVolume;
@@ -82,7 +83,23 @@ class DetectorConstruction : public G4VUserDetectorConstruction
                         G4double absoThickness,
                         G4double gapThickness,
                         G4double calorRmin,
-                        G4double calorZ
+                        G4double calorZ,
+                        G4ThreeVector center_pos
+                        ); 
+
+
+
+    void CreateCap(      G4LogicalVolume *worldLV, 
+                        G4String name,  
+                        G4Material *defaltMaterial,
+                        G4Material *absorberMaterial,
+                        G4Material *gapMaterial,
+                        G4int nofLayers,
+                        G4double absoThickness,
+                        G4double gapThickness,
+                        G4double calorRmin,
+                        G4double calorRmax,
+                        G4ThreeVector center_pos
                         ); 
 
 

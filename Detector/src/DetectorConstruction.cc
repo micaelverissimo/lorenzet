@@ -97,18 +97,8 @@ G4VPhysicalVolume* DetectorConstruction::DefineVolumes()
 
   // Get materials
   G4Material* defaultMaterial  = G4Material::GetMaterial("Galactic");
-  G4Material* absorberMaterial = G4Material::GetMaterial("G4_Pb");
-  G4Material* gapMaterial      = G4Material::GetMaterial("liquidArgon");
-  G4Material* caesium_material = G4Material::GetMaterial("G4_CESIUM_IODIDE");
-  G4Material* iron_material    = G4Material::GetMaterial("G4_Fe");
 
 
-  if ( ! defaultMaterial || ! absorberMaterial || ! gapMaterial || ! caesium_material || ! iron_material) {
-    G4ExceptionDescription msg;
-    msg << "Cannot retrieve materials already defined.";
-    G4Exception("DetectorConstruction::DefineVolumes()",
-      "MyCode0001", FatalException, msg);
-  }
 
 
  
@@ -117,10 +107,10 @@ G4VPhysicalVolume* DetectorConstruction::DefineVolumes()
   // World
   //
   G4VSolid* worldS = new G4Tubs( "World",     // its name
-                                 0,          // R min
-                                 1000*cm,    // R max
-                                 2000*cm,    // Z max
-                                 0*deg,          // phi_min
+                                 0,           // R min
+                                 5000*cm,     // R max
+                                 10000*cm,    // Z max
+                                 0*deg,       // phi_min
                                  360*deg      // phi_max
                                  ); 
 
@@ -142,10 +132,11 @@ G4VPhysicalVolume* DetectorConstruction::DefineVolumes()
 
 
 
-
   
-  
-  
+ 
+  //
+  // Barrel
+  //
   // Create Eletromagnetic calorimeter
   CreateBarrel( worldLV,
                 "ECal",
@@ -155,8 +146,9 @@ G4VPhysicalVolume* DetectorConstruction::DefineVolumes()
                 80, // layers,
                 2.*mm, // abso
                 4.*mm, // gap
-                170.*mm, // start radio,
-                500*cm);
+                1.*m, // start radio,
+                6*m ,// z
+                G4ThreeVector(0,0,0));
 
 
   // Create Hadronic calorimeter
@@ -168,12 +160,72 @@ G4VPhysicalVolume* DetectorConstruction::DefineVolumes()
                 5, // layers,
                 10.*cm, // abso
                 10.*cm, // gap
-                170.*mm + 48*cm, // start radio,
-                500*cm);
+                1.*m + 48*cm, // start radio,
+                6*m, // z
+                G4ThreeVector(0,0,0));
+
+  
 
 
 
+  /*
+  
+  //
+  // EndCap
+  //
+  // Create Eletromagnetic calorimeter
+  CreateBarrel( worldLV,
+                "ECal_EndCap_B",
+                G4Material::GetMaterial("Galactic"), // default
+                G4Material::GetMaterial("G4_Pb"), // absorber
+                G4Material::GetMaterial("liquidArgon"), // gap
+                200, // layers,
+                2.*mm, // abso
+                4.*mm, // gap
+                28.*cm, // start radio,
+                100.*cm, // z
+                G4ThreeVector(0,0,3.*m + 100.*cm));
+  // Create Hadronic calorimeter
+  CreateBarrel( worldLV,
+                "HCal_EndCap_B",
+                G4Material::GetMaterial("Galactic"), // default
+                G4Material::GetMaterial("G4_CESIUM_IODIDE"), // absorber
+                G4Material::GetMaterial("G4_Fe"), // gap
+                5, // layers,
+                10.*cm, // abso
+                10.*cm, // gap
+                148*cm, // start radio,
+                1.*m, //z
+                G4ThreeVector(0,0,3.*m + 100.*cm));
 
+
+
+  // Create Eletromagnetic calorimeter
+  CreateBarrel( worldLV,
+                "ECal_EndCap_A",
+                G4Material::GetMaterial("Galactic"), // default
+                G4Material::GetMaterial("G4_Pb"), // absorber
+                G4Material::GetMaterial("liquidArgon"), // gap
+                200, // layers,
+                2.*mm, // abso
+                4.*mm, // gap
+                28.*cm, // start radio,
+                100.*cm, // z
+                G4ThreeVector(0,0, -1*(3.*m + 100.*cm)));
+  // Create Hadronic calorimeter
+  CreateBarrel( worldLV,
+                "HCal_EndCap_A",
+                G4Material::GetMaterial("Galactic"), // default
+                G4Material::GetMaterial("G4_CESIUM_IODIDE"), // absorber
+                G4Material::GetMaterial("G4_Fe"), // gap
+                5, // layers,
+                10.*cm, // abso
+                10.*cm, // gap
+                148*cm, // start radio,
+                1.*m, //z
+                G4ThreeVector(0,0,-1*(3.*m + 100.*cm)));
+
+  */
 
   return worldPV;
 }
@@ -205,7 +257,8 @@ void DetectorConstruction::CreateBarrel(  G4LogicalVolume *worldLV,
                                           G4double absoThickness,
                                           G4double gapThickness,
                                           G4double calorRmin,
-                                          G4double calorZ
+                                          G4double calorZ,
+                                          G4ThreeVector center_pos
                                           ) 
 
 {
@@ -219,11 +272,11 @@ void DetectorConstruction::CreateBarrel(  G4LogicalVolume *worldLV,
   G4double layerThickness=absoThickness+gapThickness; 
 
   G4VSolid* calorimeterS = new G4Tubs( name,// its name
-                                 calorRmin,         // R min 1700mm
-                                 calorRmin+ nofLayers*layerThickness,         // R max 48cm+1700mm
-                                 calorZ,          // Z max, +250cm
-                                 0*deg,                 // phi_min
-                                 360*deg             // phi_max
+                                 calorRmin, // R min 1700mm
+                                 calorRmin+ nofLayers*layerThickness, // R max 48cm+1700mm
+                                 calorZ/2,    // Z max, +250cm
+                                 0*deg,     // phi_min
+                                 360*deg    // phi_max
                                  ) ;
 
 
@@ -233,13 +286,13 @@ void DetectorConstruction::CreateBarrel(  G4LogicalVolume *worldLV,
                                                   defaultMaterial,  // its material
                                                   name);   // its name
   new G4PVPlacement(
-                 0,                // no rotation
-                 G4ThreeVector(),  // at (0,0,0)
-                 calorLV,          // its logical volume
-                 name,    // its name
-                 worldLV,          // its mother  volume
-                 false,            // no boolean operation
-                 0,                // copy number
+                 0,                 // no rotation
+                 center_pos,        // at (0,0,0)
+                 calorLV,           // its logical volume
+                 name,              // its name
+                 worldLV,           // its mother  volume
+                 false,             // no boolean operation
+                 0,                 // copy number
                  m_checkOverlaps);  // checking overlaps
 
 
@@ -249,36 +302,38 @@ void DetectorConstruction::CreateBarrel(  G4LogicalVolume *worldLV,
 
   for (unsigned int layer=0; layer < nofLayers; ++layer){
 
+    
     G4VSolid* layerS = new G4Tubs(name+ "_Layer",// its name
                                  calorRmin + layer*layerThickness,        // R min 1700mm
                                  calorRmin + (layer+1)*layerThickness,   // R max 48cm+1700mm
-                                 calorZ,            // Z max, +250cm
-                                 0*deg,                 // phi_min
-                                 360*deg             // phi_max
+                                 calorZ/2,            // Z max, +250cm
+                                 0*deg,             // phi_min
+                                 360*deg            // phi_max
                                  ) ;
 
     G4LogicalVolume* layerLV = new G4LogicalVolume(
                                                   layerS,           // its solid
                                                   defaultMaterial,  // its material
-                                                  name+"_Layer");         // its name
+                                                  name+"_Layer");   // its name
 
 
     new G4PVPlacement(
-                 0,                // no rotation
-                 G4ThreeVector(),  // at (0,0,0)
-                 layerLV,          // its logical volume
-                 name+"_Layer",    // its name
-                 calorLV,          // its mother  volume
-                 false,            // no boolean operation
-                 0,                // copy number
+                 0,                 // no rotation
+                 G4ThreeVector(0,0,0),
+                 //center_pos,        // at (0,0,0)
+                 layerLV,           // its logical volume
+                 name+"_Layer",     // its name
+                 calorLV,           // its mother  volume
+                 false,             // no boolean operation
+                 0,                 // copy number
                  m_checkOverlaps);  // checking overlaps
-
+    
 
 
     G4VSolid* absorverS = new G4Tubs( name+"_Abso",// its name
                                  calorRmin + layer*(absoThickness + gapThickness) ,     // R min 1700mm
                                  calorRmin + layer*(absoThickness + gapThickness) + absoThickness,   // R max 48cm+1700mm
-                                 calorZ,          // Z max, +250cm
+                                 calorZ/2,          // Z max, +250cm
                                  0*deg,                 // phi_min
                                  360*deg             // phi_max
                                  ) ;
@@ -290,13 +345,14 @@ void DetectorConstruction::CreateBarrel(  G4LogicalVolume *worldLV,
 
 
     new G4PVPlacement(
-                 0,                // no rotation
-                 G4ThreeVector(),  // at (0,0,0)
-                 absorverLV,          // its logical volume
-                 name+"_Abso",    // its name
-                 layerLV,          // its mother  volume
-                 false,            // no boolean operation
-                 0,                // copy number
+                 0,                 // no rotation
+                 G4ThreeVector(0,0,0),
+                 //center_pos,        // at (0,0,0)
+                 absorverLV,        // its logical volume
+                 name+"_Abso",      // its name
+                 layerLV,           // its mother  volume
+                 false,             // no boolean operation
+                 0,                 // copy number
                  m_checkOverlaps);  // checking overlaps
 
 
@@ -305,9 +361,9 @@ void DetectorConstruction::CreateBarrel(  G4LogicalVolume *worldLV,
     G4VSolid* gapS = new G4Tubs( name+"_Gap",// its name
                                  calorRmin + layer*(absoThickness + gapThickness) + absoThickness,   // R max 48cm+1700mm
                                  calorRmin + (layer+1)*(absoThickness + gapThickness),   // R max 48cm+1700mm
-                                 calorZ,          // Z max, +250cm
-                                 0*deg,                 // phi_min
-                                 360*deg             // phi_max
+                                 calorZ/2,          // Z max, +250cm
+                                 0*deg,           // phi_min
+                                 360*deg          // phi_max
         ); 
 
     G4LogicalVolume* gapLV = new G4LogicalVolume(
@@ -317,37 +373,21 @@ void DetectorConstruction::CreateBarrel(  G4LogicalVolume *worldLV,
 
 
     new G4PVPlacement(
-                 0,                // no rotation
-                 G4ThreeVector(),  // at (0,0,0)
-                 gapLV,          // its logical volume
-                 name+"_Gap",    // its name
-                 layerLV,          // its mother  volume
-                 false,            // no boolean operation
-                 0,                // copy number
+                 0,                 // no rotation
+                 G4ThreeVector(0,0,0),
+                 //center_pos,        // at (0,0,0)
+                 gapLV,             // its logical volume
+                 name+"_Gap",       // its name
+                 calorLV,           // its mother  volume
+                 false,             // no boolean operation
+                 0,                 // copy number
                  m_checkOverlaps);  // checking overlaps
 
 
   }// Loop over calorimeter layers
-  
-
-  //
-  // print parameters
-  //
-  G4cout
-    << G4endl
-    << "------------------------------------------------------------" << G4endl
-    << "---> The calorimeter is " << nofLayers << " layers of: [ "
-    << absoThickness/mm << "mm of " << absorberMaterial->GetName()
-    << " + "
-    << gapThickness/mm << "mm of " << gapMaterial->GetName() << " ] " << G4endl
-    << "------------------------------------------------------------" << G4endl;
-
 
 
 }
-
-
-
 
 
 

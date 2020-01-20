@@ -16,9 +16,11 @@
 /vis/geometry/set/visibility World 0 false
 #/vis/geometry/set/colour ECal 0 green
 /vis/geometry/set/colour ECal_Abso 0 red
+/vis/geometry/set/colour ECal_EndCap_B_Abso 0 blue
 #/vis/geometry/set/colour HCal 0 yellow
 #/vis/geometry/set/colour HCal_Layer 0 blue
 /vis/geometry/set/colour HCal_Abso 0 green
+/vis/geometry/set/colour HCal_EndCap_B_Abso 0 yellow
 /vis/viewer/set/autoRefresh true
 /vis/verbose warnings
 
