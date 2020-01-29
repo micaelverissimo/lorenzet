@@ -1,4 +1,4 @@
-__all__ = [ 'lorenzetti_cells_grid_builder' ]
+__all__ = [ 'lorenzetti_cells_grid_builder', 'transform_to_ATLAS_coord' ]
 
 import os
 import json
@@ -89,9 +89,23 @@ class lorenzetti_cells_grid_builder(object):
             self.layer_dict[layer]['eta_centers'] = self.calculate_cell_centers(is_eta=True)
             self.layer_dict[layer]['eta_bounds']  = self.get_eta_bounds()
             self.layer_dict[layer]['phi_centers'] = self.calculate_cell_centers(is_eta=False)
-            self.layer_dict[layer]['eta_bounds']  = self.get_phi_bounds()
+            self.layer_dict[layer]['phi_bounds']  = self.get_phi_bounds()
             logging.info(60*'-')
     
     def dump_dict(self, path, name):
         logging.info('Save layer dict with name: %s' %(name))
         json.dump(self.layer_dict, open(os.path.join(path, name+'.json'), 'w'))
+
+def transform_to_ATLAS_coord(vectors):
+    '''
+    This function will transform a cartesian coordinates (x, y, z)
+    into a ATLAS (r, phi, eta) coordinates
+    '''
+    # in transverse plane (xy)
+    r_xy     = np.sqrt((vectors[:, 0]**2 + vectors[:, 1]**2))
+    phi      = np.arccos(vectors[:, 0]/r_xy)
+    # in longitudinal plane (xz)
+    r_xz     = np.sqrt((vectors[:, 0]**2 + vectors[:, 2]**2))
+    theta    = np.arcsin(vectors[:, 0]/r_xz)
+    eta   = -1.*np.log(np.tan(theta/2.))
+    return np.vstack((r_xy, phi, eta)).T
