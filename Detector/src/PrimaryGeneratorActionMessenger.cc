@@ -45,7 +45,7 @@ PrimaryGeneratorMessenger::PrimaryGeneratorMessenger( PrimaryGeneratorAction* ge
   m_select= new G4UIcmdWithAString("/generator/select", this);
   m_select-> SetGuidance("Select generator type");
   m_select-> SetParameterName("generator_type", false, false);
-  m_select-> SetCandidates("particleGun hepmcAscii jetReader");
+  m_select-> SetCandidates("particleGun jetReader");
   m_select-> SetDefaultValue("particleGun");
 }
 

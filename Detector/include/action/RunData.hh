@@ -29,23 +29,10 @@
 #include "G4Run.hh"
 #include "globals.hh"
 #include <vector>
+#include <map>
+#include <string>
 
-
-enum {
-  kAbs = 0,
-  kGap = 1,
-  kDim = 2, 
-  //kNumCells = 504 + 3 // 3 overflow bins for the three calo layers
-  kNumCells = 648 + 6 // 6 overflow bins for the six calo (EM+HAD)layers
-};  
-
-
-struct Deposit{
-  G4double x;
-  G4double y;
-  G4double z;
-  G4double energy;
-};
+#include "action/CaloCell.hh"
 
 
 class RunData : public G4Run
@@ -54,46 +41,32 @@ class RunData : public G4Run
 
     RunData();
     virtual ~RunData();
-  
-    void AddDeposit( G4double x, G4double y, G4double z, G4double de );
-    void AddCell(G4int id, G4double de);
+
+    // Fill event into the persistent ntuple
     void FillPerEvent();
+    // Reset all variables usage to store the pulses/cells energy
     void Reset();
+    
     void SetTotalEnergy(G4double e){TotalEnergy = e;};
-  
-    G4double  GetEdep(G4int id) const;
     G4double GetTotalEnergy(){return TotalEnergy;};
   
+    
+    void Add(G4Step *step);
   
   private:
-    
-    G4double  m_cell_energy[kNumCells];
+
+    void CreateCaloCells();
+
+    std::vector<CaloCell> m_cells;
+
+    std::map<std::string, std::vector<G4double>> m_container;
+
     G4double TotalEnergy;
-    
-    std::vector<Deposit>  m_deposit;
-    std::vector<G4double> m_deposit_x;
-    std::vector<G4double> m_deposit_y;
-    std::vector<G4double> m_deposit_z;
-    std::vector<G4double> m_deposit_energy;
   
-  };
+};
 
-
-  inline void RunData::AddDeposit( G4double x, G4double y, G4double z, G4double de ){
-    Deposit p = {x,y,z,de};
-    m_deposit.push_back( p );
-  }
   
   
-  inline void RunData::AddCell(G4int id, G4double de) {
-    m_cell_energy[id] += de; 
-  }
-  
-  
-  inline G4double  RunData::GetEdep(G4int id) const {
-    return m_cell_energy[id];
-  }   
-
 
 #endif
 

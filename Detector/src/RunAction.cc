@@ -45,7 +45,7 @@ RunAction::~RunAction()
 
 G4Run* RunAction::GenerateRun()
 {
-  return (new RunData);
+  return (new RunData());
 }
 
 
@@ -54,7 +54,6 @@ void RunAction::BeginOfRunAction(const G4Run* run)
   G4cout << "### Run " << run->GetRunID() << " start." << G4endl;
   G4AnalysisManager* analysisManager = G4AnalysisManager::Instance();
   analysisManager->OpenFile(m_output);
-
 }
 
 

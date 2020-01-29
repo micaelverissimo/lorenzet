@@ -33,16 +33,14 @@
 class ActionInitialization : public G4VUserActionInitialization
 {
   public:
-    ActionInitialization(DetectorConstruction *, G4String output, bool save_deposit);
+    ActionInitialization(DetectorConstruction *, G4String output );
     virtual ~ActionInitialization();
 
     virtual void BuildForMaster() const;
     virtual void Build() const;
 
   private:
-
     G4String m_output;
-    bool m_save_deposit;
 };
 
 #endif

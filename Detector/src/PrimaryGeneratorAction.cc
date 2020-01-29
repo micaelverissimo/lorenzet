@@ -26,8 +26,7 @@
 
 #include "G4Event.hh"
 #include "G4ParticleGun.hh"
-#include "hepmc/HepMCReader.hh"
-#include "jets/JetReader.hh"
+#include "pythia/EventReader.hh"
 #include "PrimaryGeneratorAction.hh"
 #include "PrimaryGeneratorMessenger.hh"
 #include "G4SystemOfUnits.hh"
@@ -35,22 +34,15 @@
 
 
 
-// Multitread support
-//#include "G4AutoLock.hh"
-//namespace { G4Mutex m_mutex = G4MUTEX_INITIALIZER; }
 
 
 
 PrimaryGeneratorAction::PrimaryGeneratorAction(): G4VUserPrimaryGeneratorAction()
 {
   //G4AutoLock lock(&m_mutex);
-  //if (m_generatorMap.empty()){
   m_generatorMap["particleGun"] = new G4ParticleGun();
-  m_generatorMap["hepmcAscii"]  = new HepMCReader();
-  m_generatorMap["jetReader"]   = new JetReader();
-  //}
-  G4cout << "CREATE THE PRIMARY..." << G4endl;
-  G4cout << m_generatorMap["jetReader"]<< G4endl;
+  m_generatorMap["eventReader"]   = new EventReader();
+  
   m_currentGenerator = m_generatorMap["particleGun"];
   m_currentGeneratorName= "particleGun";
   m_messenger= new PrimaryGeneratorMessenger(this);

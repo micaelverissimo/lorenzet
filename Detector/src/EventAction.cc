@@ -29,7 +29,7 @@
 /// \brief Implementation of the EventAction class
 
 #include "EventAction.hh"
-#include "RunData.hh"
+#include "action/RunData.hh"
 
 #include "G4RunManager.hh"
 #include "G4Event.hh"
@@ -38,13 +38,11 @@
 #include "Randomize.hh"
 #include <iomanip>
 
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
 EventAction::EventAction()
  : G4UserEventAction()
 {;}
 
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
 EventAction::~EventAction()
 {;}
@@ -74,6 +72,7 @@ void EventAction::BeginOfEventAction(const G4Event* /*event*/)
 }
 
 
+
 void EventAction::EndOfEventAction(const G4Event* event)
 {
   G4PrimaryVertex* primaryVertex = event->GetPrimaryVertex();
@@ -84,3 +83,7 @@ void EventAction::EndOfEventAction(const G4Event* event)
   runData->SetTotalEnergy(ke);
   runData->FillPerEvent();
 }
+
+
+
+

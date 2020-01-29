@@ -49,8 +49,6 @@ G4GlobalMagFieldMessenger* DetectorConstruction::m_magFieldMessenger = 0;
 
 DetectorConstruction::DetectorConstruction()
  : G4VUserDetectorConstruction(),
-   m_absorberPV(0),
-   m_gapPV(0),
    m_checkOverlaps(true)
 {;}
 

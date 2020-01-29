@@ -23,8 +23,8 @@
 // * acceptance of all terms of the Geant4 Software license.          *
 // ********************************************************************
 
-#include "jets/JetReader.hh"
-#include "jets/JetReaderMessenger.hh"
+#include "pythia/EventReader.hh"
+#include "pythia/EventReaderMessenger.hh"
 #include "G4RunManager.hh"
 #include "G4LorentzVector.hh"
 #include "G4Event.hh"
@@ -38,15 +38,15 @@
 #include <iostream>
 #include <fstream>
 
-JetReader::JetReader()
+EventReader::EventReader()
   :  m_filename("hepmc_input.root"), 
      m_verbose(0),
      m_evt(0)
 {
-  m_messenger= new JetReaderMessenger(this);
+  m_messenger= new EventReaderMessenger(this);
 }
 
-JetReader::~JetReader()
+EventReader::~EventReader()
 {
   release();
   m_f->Close();
@@ -56,7 +56,7 @@ JetReader::~JetReader()
 
 
 
-void JetReader::Initialize()
+void EventReader::Initialize()
 {
   // Get the ttree from the root file
   G4cout << "Open the root file: " << m_filename << G4endl;
@@ -74,7 +74,7 @@ void JetReader::Initialize()
 
 
 template <class T> 
-void JetReader::InitBranch(TTree* fChain, std::string branch_name, T* param, bool message){
+void EventReader::InitBranch(TTree* fChain, std::string branch_name, T* param, bool message){
 
   std::string bname = branch_name;
   if (fChain->GetAlias(bname.c_str()))
@@ -90,7 +90,7 @@ void JetReader::InitBranch(TTree* fChain, std::string branch_name, T* param, boo
 
 
 
-void JetReader::link(TTree *t){
+void EventReader::link(TTree *t){
   
   InitBranch( t, "jet_orig_e"		,      &m_jet_orig_e		);
   InitBranch( t, "jet_orig_et"	,      &m_jet_orig_et		);
@@ -117,7 +117,7 @@ void JetReader::link(TTree *t){
 
 
 
-void JetReader::clear(){
+void EventReader::clear(){
  
   m_jet_orig_e		= 0.0;
   m_jet_orig_et	  = 0.0;
@@ -143,7 +143,7 @@ void JetReader::clear(){
 }
 
 
-void JetReader::allocate(){
+void EventReader::allocate(){
 
   m_s_pdg_id		= new std::vector<int>();
   m_s_orig_e		= new std::vector<float>();
@@ -160,7 +160,7 @@ void JetReader::allocate(){
 
 
 
-void JetReader::release(){
+void EventReader::release(){
 
   delete m_s_orig_e		;
   delete m_s_orig_et	;
@@ -179,19 +179,19 @@ void JetReader::release(){
 
 
 // Call by geant
-void JetReader::GeneratePrimaryVertex( G4Event* anEvent )
+void EventReader::GeneratePrimaryVertex( G4Event* anEvent )
 {
   // clear the old event one;
   clear();
   m_evt = anEvent->GetEventID();
   // Check if we have an event inside of the root three
   if ( m_evt <  m_ttree->GetEntries() ){
-    G4cout << " Get event (JetReader) with number "<< m_evt << G4endl;
+    G4cout << " Get event (EventReader) with number "<< m_evt << G4endl;
     m_ttree->GetEntry(m_evt);
     Convert( anEvent );
     //m_evt++;
   }else{
-    G4cout << "JetReader: no generated particles. run terminated..." << G4endl;
+    G4cout << "EventReader: no generated particles. run terminated..." << G4endl;
     G4RunManager::GetRunManager()->AbortRun();
   }
     
@@ -202,7 +202,7 @@ void JetReader::GeneratePrimaryVertex( G4Event* anEvent )
 
 
 
-G4bool JetReader::CheckVertexInsideWorld(const G4ThreeVector& pos) const
+G4bool EventReader::CheckVertexInsideWorld(const G4ThreeVector& pos) const
 {
   G4Navigator* navigator= G4TransportationManager::GetTransportationManager()->GetNavigatorForTracking();
   G4VPhysicalVolume* world= navigator->GetWorldVolume();
@@ -216,7 +216,7 @@ G4bool JetReader::CheckVertexInsideWorld(const G4ThreeVector& pos) const
 
 
 
-void JetReader::Convert( G4Event* g4event )
+void EventReader::Convert( G4Event* g4event )
 {
 
   for ( unsigned int i=0; i < m_jet_n_part; ++i )

@@ -1,4 +1,3 @@
-//
 // ********************************************************************
 // * License and Disclaimer                                           *
 // *                                                                  *
@@ -24,59 +23,32 @@
 // ********************************************************************
 
 
-#include "G4UIdirectory.hh"
-#include "G4UIcmdWithoutParameter.hh"
-#include "G4UIcmdWithAString.hh"
-#include "G4UIcmdWithAnInteger.hh"
-#include "hepmc/HepMCReaderMessenger.hh"
-#include "hepmc/HepMCReader.hh"
+#ifndef EVENTREADERMESSENGER_H
+#define EVENTREADERMESSENGER_H
 
+#include "G4UImessenger.hh"
 
-HepMCReaderMessenger::HepMCReaderMessenger(HepMCReader* agen)
-  : m_gen(agen)
-{
-  m_dir= new G4UIdirectory("/generator/hepmcAscii/");
-  m_dir->SetGuidance("Reading HepMC event from an Ascii file");
+class EventReader;
+class G4UIdirectory;
+class G4UIcmdWithoutParameter;
+class G4UIcmdWithAString;
+class G4UIcmdWithAnInteger;
 
-  m_verbose= new G4UIcmdWithAnInteger("/generator/hepmcAscii/verbose", this);
-  m_verbose-> SetGuidance("Set verbose level");
-  m_verbose-> SetParameterName("verboseLevel", false, false);
-  m_verbose-> SetRange("verboseLevel>=0 && verboseLevel<=1");
+class EventReaderMessenger : public G4UImessenger {
+  
+  public:
+    EventReaderMessenger(EventReader* agen);
+    ~EventReaderMessenger();
+  
+    void SetNewValue(G4UIcommand* command, G4String newValues);
+    G4String GetCurrentValue(G4UIcommand* command);
+  
+  private:
+    EventReader             *m_gen;
+    G4UIdirectory         *m_dir;
+    G4UIcmdWithAnInteger  *m_verbose;
+    G4UIcmdWithAString    *m_open;
 
-  m_open= new G4UIcmdWithAString("/generator/hepmcAscii/open", this);
-  m_open-> SetGuidance("(re)open data file (HepMC Ascii format)");
-  m_open-> SetParameterName("input ascii file", true, true);
-}
+};
 
-
-HepMCReaderMessenger::~HepMCReaderMessenger()
-{
-  delete m_verbose;
-  delete m_open;
-  delete m_dir;
-}
-
-
-void HepMCReaderMessenger::SetNewValue(G4UIcommand* command, G4String newValues)
-{
-  if (command==m_verbose) {
-    int level= m_verbose-> GetNewIntValue(newValues);
-    m_gen-> SetVerboseLevel(level);
-  } else if (command==m_open) {
-    m_gen-> SetFileName(newValues);
-    G4cout << "HepMC Ascii inputfile: " << m_gen->GetFileName() << G4endl;
-    m_gen->Initialize();
-  }
-}
-
-
-G4String HepMCReaderMessenger::GetCurrentValue(G4UIcommand* command)
-{
-  G4String cv;
-  if (command == m_verbose) {
-    cv= m_verbose->ConvertToString(m_gen-> GetVerboseLevel());
-  } else  if (command == m_open) {
-    cv= m_gen->GetFileName();
-  }
-  return cv;
-}
+#endif

@@ -39,15 +39,10 @@ class DetectorConstruction;
 class SteppingAction : public G4UserSteppingAction
 {
   public:
-    SteppingAction( bool save_deposit);
+    SteppingAction();
     virtual ~SteppingAction();
-  
     virtual void UserSteppingAction(const G4Step* step);
-    int WhichZBin(double zpos);
-    int WhichXYbin(double xpos, double ypos, int zbin);
   
-  private:
-    bool m_saveDeposit;
 };
 
 
