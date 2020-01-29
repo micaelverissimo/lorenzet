@@ -20,3 +20,5 @@ MoreFilesForYou-*
 build
 .python-version
 
+# configs cells
+./lorenzet/share/json_files/
